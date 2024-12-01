@@ -82,15 +82,7 @@ def import_FEC(filename, key):
     df = df.with_columns(pl.col("Debit", "Credit")
                          .str.replace(",", ".")
                          .cast(pl.Float64))
-    
-    # - - - - - - -  A SUPPRIMER APRES LA PHASE DE TEST- - - - - - - - - - 
-    df = df.filter(
-        (pl.col("JournalCode") == "TV") |
-        (pl.col("JournalCode") == "TVH") |
-        (pl.col("JournalCode") == "VVO")
-    )
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    
+
     # Conserve uniquement les colonnes utiles
     df = df.select("PieceRef",
                    "EcritureDate",

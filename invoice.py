@@ -159,13 +159,22 @@ class Invoice:
             
             # Tri des factures en fonction de la numérotation
             df = df.sort(by="Number")
-            serial.invoices = df
             
             # Remplis automatiquement les numéros de debut et de fin
             if serial.start is None:
                 serial.start = int(str(df["Number"].min()))
             if serial.end is None:
                 serial.end = int(str(df["Number"].max()))
+                
+            # Filtre les factures pour ne conserver que celles dans l'intervalle start-end
+            # Permet de respecter ces limites si l'utilisateur a indiqué un start ou un end personnalisé
+            df = df.filter(
+                (pl.col("Number") >= serial.start) & 
+                (pl.col("Number") <= serial.end)
+            )
+            
+            # Sauvegarde la liste des factures dans le serial
+            serial.invoices = df
 
     def search_missing(self):
         """Recherche les numéros de factures manquants dans la liste"""
@@ -297,7 +306,7 @@ class Invoice:
 
         # Conserver les pattern qui ont un certain nombre d'occurences trouvées
         df = df.filter(pl.col("count") >= count).drop("count")
-        
+
         return df.to_dicts()
         
     def export(self):

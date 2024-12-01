@@ -1,5 +1,6 @@
 from openpyxl import load_workbook
 from tkinter import messagebox
+from pathlib import Path
 import datetime
 import polars as pl
 
@@ -32,6 +33,11 @@ def validate_account(facture: dict, key: str):
     
 def import_log_cador(filename, key):
     """Liste les factures de ventes du journal de vente de Cador"""
+    if Path(filename).suffix.lower() != ".xlsx":
+        messagebox.showerror("Erreur de format", 
+        "Le format CADOR nécessite un fichier .xlsx")
+        return
+    
     wb = load_workbook(filename=filename)
     ws = wb.worksheets[0]
     

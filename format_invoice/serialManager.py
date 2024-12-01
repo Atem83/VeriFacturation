@@ -90,6 +90,6 @@ class SerialManager:
     def check_overlaps(self):
         """Verifie si les numérotations ne se chevauchent pas"""
         if self.overlaps and len(self.list_overlaps()) > 0:
-            msg = ("Les valeurs 'start' et 'end' des paires prefix-suffix " +
-                   "identiques ne doivent pas se chevaucher")
+            msg = ("Les paires préfixe-suffixe identiques doivent comporter " +
+                   "des valeurs 'Début' et 'Fin' qui ne se chevauchent pas.")
             raise ValueError(msg)

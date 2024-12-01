@@ -240,6 +240,7 @@ def export_excel(invoice):
                 column_formats=dict_col,
                 header_format={"bold":True, "align":"center"},
                 include_header=True,
+                autofilter=False,
                 autofit=True
             )
             startLine += df_missing.height + 3
@@ -259,6 +260,7 @@ def export_excel(invoice):
                 column_formats=dict_col,
                 header_format={"bold":True, "align":"center"},
                 include_header=True,
+                autofilter=False,
                 autofit=True
             )
         
