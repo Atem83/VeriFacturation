@@ -322,6 +322,7 @@ class MainWindow(QMainWindow):
             url = event.mimeData().urls()[0]  # On récupère la première URL du mimeData
             file_path = url.toLocalFile()  # Convertit l'URL en chemin local
             self.file_input.setText(file_path)  # Mets le chemin dans le QLineEdit
+            self.auto_search() # lance l'auto-search après le drop
 
     def move_up(self):
         """Déplace la ligne sélectionnée vers le haut."""
@@ -365,6 +366,9 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
+
+
+# Ne prendre qu'une seule ligne client par écriture comptable, pour éviter des doublons de factures quand il y a plusieurs lignes clients sur une écriture
 
 # voir pour rajouter dans l'interface des outils de personnalisation : 
 #   racine client, 
