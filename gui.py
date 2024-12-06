@@ -4,17 +4,158 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, 
     QLineEdit, QPushButton, QComboBox, QTableWidget, QTableWidgetItem,
     QHeaderView, QAbstractItemView, QWidget, QFileDialog, QMessageBox,
+    QMenuBar, QDialog, QCheckBox
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QShortcut, QKeySequence
 from invoice import Invoice
-from __version__ import __name__ as name, __version__ as version
+from __version__ import __version__, __author__, __program__
 
+class MenuBar(QMenuBar):
+    """Créer une barre de menus."""
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.parent = parent
+        
+        # Créer le menu Fichier
+        file_menu = self.addMenu("&Fichier")
+        # Action Ouvrir
+        self.open_action = file_menu.addAction("&Ouvrir")
+        self.open_action.setShortcut("Ctrl+O")
+        # Action Quitter
+        self.quit_action = file_menu.addAction("&Quitter")
+        self.quit_action.setShortcut("Ctrl+Q")
+        
+        # Créer le menu Paramètres
+        settings_menu = self.addAction("&Paramètres")
+        settings_menu.triggered.connect(self.show_settings)
+        
+        # Créer le menu Aide
+        help_menu = self.addMenu("&Aide")
+        # Action À propos
+        self.about_action = help_menu.addAction("À &propos")
+        self.about_action.triggered.connect(self.show_about)
+
+    def show_about(self):
+        """Affiche la boîte de dialogue À propos."""
+        QMessageBox.about(
+            self,
+            "À propos",
+            f"Version {__version__}\n"
+            f"Développeur : {__author__}\n\n"
+            "Application de contrôle de numérotation de factures.\n"
+            "Permet de vérifier les factures manquantes à partir des numéros de factures."
+        )
+
+    def show_settings(self):
+        """Affiche la fenêtre des paramètres."""
+        settings_dialog = SettingsWindow(self)
+        # Initialiser avec les valeurs actuelles de MainWindow
+        settings_dialog.client_input.setText(self.parent.client_root)
+        settings_dialog.occurences_input.setText(str(self.parent.min_occurrences))
+        settings_dialog.case_toggle.setChecked(self.parent.case_insensitive)
+        
+        if settings_dialog.exec() == QDialog.Accepted:
+            # Mettre à jour les valeurs dans MainWindow
+            self.parent.client_root = settings_dialog.client_input.text()
+            self.parent.min_occurrences = int(settings_dialog.occurences_input.text())
+            self.parent.case_insensitive = settings_dialog.case_toggle.isChecked()
+
+class SettingsWindow(QDialog):
+    """Fenêtre des paramètres."""
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Paramètres")
+        self.setModal(True)
+        self.setGeometry(200, 200, 245, 150)
+        
+        # Layout principal
+        layout = QVBoxLayout(self)
+        
+        # Racine client
+        client_layout = QHBoxLayout()
+        client_label = QLabel("Racine client :")
+        self.client_input = QLineEdit()
+        self.client_input.setToolTip(
+            "Racine des comptes clients dans le logiciel.\n"
+            "Exemples : Cador = C ; Quadra = 411")
+        client_layout.addWidget(client_label)
+        client_layout.addWidget(self.client_input)
+        layout.addLayout(client_layout)
+        
+        # Nombre minimum d'occurences
+        occurences_layout = QHBoxLayout()
+        occurences_label = QLabel("Nombre minimum\nd'occurences d'une séquence :")
+        self.occurences_input = QLineEdit()
+        self.occurences_input.setToolTip(
+            "Il s'agit du nombre de factures qui doivent partager le préfixe/suffixe choisi\n" +
+            "pour considérer une séquence comme valide par 'Séquence auto'.\n\n" +
+            "La valeur doit être un entier positif.")
+        occurences_layout.addWidget(occurences_label)
+        occurences_layout.addWidget(self.occurences_input)
+        layout.addLayout(occurences_layout)
+        
+        # Sensibilité à la casse
+        case_layout = QHBoxLayout()
+        case_label = QLabel("Séquence insensible à la casse :")
+        self.case_toggle = QCheckBox()
+        self.case_toggle.setToolTip(
+            "Si la case est cochée, les préfixes et suffixes seront insensibles à la casse.\n" + 
+            "Exemples : FAC001 = fac001")
+        case_layout.addWidget(case_label)
+        case_layout.addWidget(self.case_toggle)
+        layout.addLayout(case_layout)
+        
+        # Ajouter un espacement supplémentaire
+        layout.addSpacing(10)
+        
+        # Boutons OK et Annuler
+        buttons_layout = QHBoxLayout()
+        ok_button = QPushButton("OK")
+        cancel_button = QPushButton("Annuler")
+        ok_button.clicked.connect(self.on_ok)
+        cancel_button.clicked.connect(self.on_cancel)
+        buttons_layout.addWidget(ok_button)
+        buttons_layout.addWidget(cancel_button)
+        layout.addLayout(buttons_layout)
+        
+    def on_ok(self):
+        """Gérer le clic sur OK."""
+        # Vérifier que occurences_input est un entier positif
+        try:
+            occurences = int(self.occurences_input.text())
+            if occurences <= 0:
+                raise ValueError("La valeur doit être supérieure à 0")
+        except ValueError:
+            QMessageBox.warning(
+                self,
+                "Erreur de saisie",
+                "Le nombre minimum d'occurences doit être un entier supérieur à 0."
+            )
+            self.occurences_input.setText(self.parent().parent.min_occurrences)
+            return
+            
+        self.accept()
+        
+    def on_cancel(self):
+        """Gérer le clic sur Annuler."""
+        # Remettre les valeurs par défaut
+        self.client_input.setText(self.parent().parent.client_root)
+        self.occurences_input.setText(str(self.parent().parent.min_occurrences))
+        self.case_toggle.setChecked(self.parent().parent.case_insensitive)
+        self.reject()
+        
 class MainWindow(QMainWindow):
+    """Fenêtre principale."""
     def __init__(self):
         super().__init__()
-        self.setWindowTitle(f"{name} v{version}")
-        self.setGeometry(200, 200, 345, 365)
+        self.setWindowTitle(__program__)
+        self.setGeometry(200, 200, 360, 400)
+        
+        # Initialiser les valeurs des paramètres
+        self.client_root = "C"
+        self.min_occurrences = 3
+        self.case_insensitive = True
 
         # Connecter l'événement de redimensionnement de la fenêtre
         self.resizeEvent = self.on_resize
@@ -31,6 +172,9 @@ class MainWindow(QMainWindow):
         file_layout = QHBoxLayout()
         file_label = QLabel("Fichier :")
         self.file_input = QLineEdit()
+        self.file_input.setToolTip(
+            "Vous pouvez glisser-déposer un fichier dans la fenêtre\n" +
+            "ou cliquer sur 'Parcourir'")
         browse_button = QPushButton("Parcourir")
         browse_button.clicked.connect(self.browse_file)
         file_layout.addWidget(file_label)
@@ -128,6 +272,14 @@ class MainWindow(QMainWindow):
         launch_search_button.clicked.connect(self.launch_search)
         layout.addWidget(launch_search_button)
 
+        # Créer la barre de menu
+        self.menu_bar = MenuBar(self)
+        self.setMenuBar(self.menu_bar)
+        
+        # Connecter les actions du menu
+        self.menu_bar.open_action.triggered.connect(self.browse_file)
+        self.menu_bar.quit_action.triggered.connect(self.close)
+
     def on_resize(self, event):
         """Exécute des actions lorsque la fenêtre principale est redimensionnée."""
         #print(f"Dimensions de la fenêtre : {self.width()}x{self.height()}")
@@ -163,9 +315,12 @@ class MainWindow(QMainWindow):
         self.table.insertRow(0)  # Ajoute une seule ligne vide
         
         # Rechercher le pattern des différentes séquences de facturation
-        invoices = Invoice(self.file_input.text())
+        invoices = Invoice(
+            self.file_input.text(),
+            self.client_root
+            )
         invoices.import_invoices(self.format_dropdown.currentText())
-        patterns = invoices.infer_pattern()
+        patterns = invoices.infer_pattern(self.min_occurrences)
         
         # Ecrire ces patterns dans le tableau
         for i, pattern in enumerate(patterns):
@@ -206,7 +361,10 @@ class MainWindow(QMainWindow):
             data.append(row_data)
         
         # Créer mon objet Invoice à partir des informations de l'utilisateur
-        invoices = Invoice(self.file_input.text())
+        invoices = Invoice(
+            self.file_input.text(),
+            self.client_root
+            )
         invoices.import_invoices(self.format_dropdown.currentText())
         for row in data:
             try:
@@ -233,7 +391,8 @@ class MainWindow(QMainWindow):
                 return
         
         # Effectuer les recherches
-        invoices.search_pattern()
+        print(self.case_insensitive)
+        invoices.search_pattern(self.case_insensitive)
         invoices.search_missing()
         invoices.search_duplicate()
         
@@ -367,10 +526,10 @@ if __name__ == "__main__":
     window.show()
     sys.exit(app.exec())
 
+# Voir comment mieux gérer __version__
+# Rajouter un readme
+# Rajouter un changelog
 
 # Ne prendre qu'une seule ligne client par écriture comptable, pour éviter des doublons de factures quand il y a plusieurs lignes clients sur une écriture
 
-# voir pour rajouter dans l'interface des outils de personnalisation : 
-#   racine client, 
-#   nombre d'occurences pour être considéré comme un pattern
-#   recherche du pattern sensible à la casse
+# mettre une option case_insensitive dans le infer_pattern si pas trop compliqué

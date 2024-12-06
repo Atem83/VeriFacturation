@@ -143,7 +143,7 @@ class Invoice:
                 pl.col("PieceRef").str.contains(pattern)).with_columns(
                     pl.col("PieceRef").str.extract(pattern, 1).alias("Number")
                     )
-            
+
             # Création de la longueur de la numérotation qui servira plus tard
             # Transformation de la numérotation en format integer
             df = df.select([
