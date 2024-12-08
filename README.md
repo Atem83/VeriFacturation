@@ -1,6 +1,6 @@
 <h1 align="center">VeriFacturation</h1>
 
-<h3 align="center">Un module pour faciliter le contrôle des factures manquantes</h3>
+<h3 align="center">Vérifie les numéros de factures manquants et les numéros de factures en doublon.</h3>
 
 <div align="center">
     

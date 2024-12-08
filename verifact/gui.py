@@ -45,8 +45,7 @@ class MenuBar(QMenuBar):
             "À propos",
             f"Version {metadata.version}\n"
             f"Auteur : {metadata.author}\n\n"
-            f"{metadata.description}\n"
-            f"{metadata.long_description}"
+            f"{metadata.description}"
         )
 
     def show_settings(self):
