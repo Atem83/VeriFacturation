@@ -30,6 +30,13 @@
 
 <br>
 
+<h2 align="center"> Formats d'import </h2>
+
+- Fichier Ecritures Comptables (.txt)
+- Journal des Ventes de Cador/ACD Groupe (.xlsx)
+
+<br>
+
 <h2 align="center"> Installation </h2>
 
 <div align="center">
