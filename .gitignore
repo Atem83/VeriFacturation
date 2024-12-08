@@ -1,2 +1,11 @@
+# Byte-compiled / optimized / DLL files
 *.pyc
 __pycache__/
+
+# Distribution / packaging
+dist/
+VeriFacturation.egg-info/
+publish.py
+
+# Others
+launch.py

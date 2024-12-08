@@ -1,5 +1,5 @@
 from openpyxl import load_workbook
-from tkinter import messagebox
+from PySide6.QtWidgets import QMessageBox
 from pathlib import Path
 import datetime
 import polars as pl
@@ -34,7 +34,7 @@ def validate_account(facture: dict, key: str):
 def import_log_cador(filename, key):
     """Liste les factures de ventes du journal de vente de Cador"""
     if Path(filename).suffix.lower() != ".xlsx":
-        messagebox.showerror("Erreur de format", 
+        QMessageBox.critical(None, "Erreur de format", 
         "Le format CADOR nécessite un fichier .xlsx")
         return
     
@@ -43,10 +43,8 @@ def import_log_cador(filename, key):
     
     # Vérifie que le type de fichier est correct
     if ws.cell(1, 1).value != 'Edition Journaux':
-        messagebox.showerror(
-            "Erreur",
-            "Il ne s'agit pas d'un journal de vente"
-            )
+        QMessageBox.critical(None, "Erreur",
+            "Il ne s'agit pas d'un journal de vente")
         return
     
     # Nombre de lignes dans la feuille

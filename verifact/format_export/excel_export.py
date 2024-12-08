@@ -1,8 +1,9 @@
 import re
 import polars as pl
 from pathlib import Path
+from PySide6.QtCore import QStandardPaths
 from xlsxwriter import Workbook
-from format_invoice import *
+from ..format_invoice import *
 
 def create_df_global(manager: SerialManager, type: str):
     """Compile dans une liste globale les factures manquantes ou les doublons de chaque séquence.
@@ -142,21 +143,21 @@ def create_statistics(invoice):
     return df
 
 def increment_path(filename):
-    """Incrémente le nom du fichier de (1)
+    """Incrémente le nom du fichier de (1) s'il existe déjà
     
     Args:
-        chemin (str): nom du fichier
-        
+        filename (str): nom du fichier
     Returns:
-        nouveau_nom (str) : nouveau nom du fichier
+        file_path (str) : nouveau nom du fichier
     """
     
-    filename = Path.home() / "Desktop" / filename
+    desktop_path = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+    file_path = Path(desktop_path) / filename
     
-    while filename.exists():
+    while file_path.exists():
         # Sépare le nom du fichier et son extension
-        nom_brut = Path(filename).stem
-        extension = Path(filename).suffix.lower()
+        nom_brut = Path(file_path).stem
+        extension = Path(file_path).suffix.lower()
         
         # Chercher le motif de la forme "(x)" à la fin du nom de fichier
         match = re.search(r'(\(\d+\))$', nom_brut)
@@ -170,9 +171,9 @@ def increment_path(filename):
             # Ajouter "(1)" à la fin du nom du fichier
             nouveau_nom = nom_brut + " (1)"
             
-        filename = Path.home() / "Desktop" / (nouveau_nom + extension)
+        file_path = Path.home() / "Desktop" / (nouveau_nom + extension)
     
-    return filename
+    return file_path
 
 def export_excel(invoice):
     """Exporte sous Excel les résultats des factures manquantes et doublons.
@@ -180,8 +181,7 @@ def export_excel(invoice):
         invoice (Invoice): Instance de la classe Invoice
     """
     
-    filename = increment_path("FACTURES DE VENTE.xlsx")
-    path_wb = Path.home() / "Desktop" / filename
+    path_wb = increment_path("FACTURES DE VENTE.xlsx")
     
     # Création de l'export sous excel avec polars et xlsxwriter
     with Workbook(path_wb) as wb:

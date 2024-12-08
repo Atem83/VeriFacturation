@@ -1,12 +1,12 @@
 import polars as pl
 from pathlib import Path
-from tkinter import messagebox
+from PySide6.QtWidgets import QMessageBox
 
 def import_FEC(filename, key):
     """Liste les factures de vente d'un FEC"""
     
     if Path(filename).suffix.lower() != ".txt":
-        messagebox.showerror("Erreur de format", 
+        QMessageBox.critical(None, "Erreur de format", 
         "Le format FEC nécessite un fichier .txt")
         return
     
@@ -22,8 +22,8 @@ def import_FEC(filename, key):
         elif nb_verticales > nb_tabulations:
             separateur = '|'
         else:
-            messagebox.showerror("Erreur de format", 
-                                 "Séparateur FEC non identifié")
+            QMessageBox.critical(None, "Erreur de format", 
+            "Séparateur FEC non identifié")
             return
 
     # Permet de changer l'encodage si un problème d'import survient

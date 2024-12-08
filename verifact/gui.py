@@ -8,8 +8,10 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QShortcut, QKeySequence
-from invoice import Invoice
-from __version__ import __version__, __author__, __program__
+from verifact.invoice import Invoice
+import verifact.metadata as metadata
+
+__version__ = "1.0.0"
 
 class MenuBar(QMenuBar):
     """Créer une barre de menus."""
@@ -38,13 +40,13 @@ class MenuBar(QMenuBar):
 
     def show_about(self):
         """Affiche la boîte de dialogue À propos."""
-        QMessageBox.about(
+        QMessageBox.information(
             self,
             "À propos",
-            f"Version {__version__}\n"
-            f"Développeur : {__author__}\n\n"
-            "Application de contrôle de numérotation de factures.\n"
-            "Permet de vérifier les factures manquantes à partir des numéros de factures."
+            f"Version {metadata.version}\n"
+            f"Auteur : {metadata.author}\n\n"
+            f"{metadata.description}\n"
+            f"{metadata.long_description}"
         )
 
     def show_settings(self):
@@ -149,7 +151,7 @@ class MainWindow(QMainWindow):
     """Fenêtre principale."""
     def __init__(self):
         super().__init__()
-        self.setWindowTitle(__program__)
+        self.setWindowTitle(metadata.name)
         self.setGeometry(200, 200, 360, 400)
         
         # Initialiser les valeurs des paramètres
@@ -391,7 +393,6 @@ class MainWindow(QMainWindow):
                 return
         
         # Effectuer les recherches
-        print(self.case_insensitive)
         invoices.search_pattern(self.case_insensitive)
         invoices.search_missing()
         invoices.search_duplicate()
@@ -518,18 +519,9 @@ class MainWindow(QMainWindow):
             self.table.setItem(row1, col, QTableWidgetItem(value2))
             self.table.setItem(row2, col, QTableWidgetItem(value1))
 
-
-# Application principale
-if __name__ == "__main__":
+def run_app():
+    """Lance l'interface graphique."""
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
-
-# Voir comment mieux gérer __version__
-# Rajouter un readme
-# Rajouter un changelog
-
-# Ne prendre qu'une seule ligne client par écriture comptable, pour éviter des doublons de factures quand il y a plusieurs lignes clients sur une écriture
-
-# mettre une option case_insensitive dans le infer_pattern si pas trop compliqué
