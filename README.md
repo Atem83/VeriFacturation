@@ -13,8 +13,8 @@
 
 
 <div align="center">
-
-![2d](https://github.com/Atem83/VeriFacturation/images/image_example)
+    
+![VeriFacturation Demo](https://raw.githubusercontent.com/Atem83/VeriFacturation/main/images/image_example.png)
 
 </div>
 
