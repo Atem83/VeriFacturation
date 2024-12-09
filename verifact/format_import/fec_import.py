@@ -1,6 +1,7 @@
 import polars as pl
 from pathlib import Path
 from PySide6.QtWidgets import QMessageBox
+from .utils_import import * 
 
 def import_FEC(filename, key):
     """Liste les factures de vente d'un FEC"""
@@ -65,9 +66,6 @@ def import_FEC(filename, key):
         .alias("CompteNum")
     )
     
-    # Conserve uniquement les comptes clients pour lister les factures
-    df = df.filter(pl.col("CompteNum").str.contains(key))
-    
     # Affecte None aux colonnes Date ne contenant que des espaces blancs
     # Permet d'éviter des erreurs dans des FEC avec des espaces dans la date
     df = df.with_columns(
@@ -91,5 +89,8 @@ def import_FEC(filename, key):
                    "Debit",
                    "Credit"
                     )
+    
+    df = num_ecritures(df)
+    df = concat_customer(df, "C")
     
     return df

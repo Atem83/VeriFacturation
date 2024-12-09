@@ -11,8 +11,6 @@ from PySide6.QtGui import QShortcut, QKeySequence
 from verifact.invoice import Invoice
 import verifact.metadata as metadata
 
-__version__ = "1.0.0"
-
 class MenuBar(QMenuBar):
     """Créer une barre de menus."""
     def __init__(self, parent=None):

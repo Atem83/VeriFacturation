@@ -3,11 +3,8 @@ from PySide6.QtWidgets import QMessageBox
 from pathlib import Path
 import datetime
 import polars as pl
+from .utils_import import * 
 
-def test_date(date):
-        """Test si une variable est sous un format de date"""
-        return isinstance(date, datetime.datetime)
-    
 def extract_date(jour_facture, date_journal):
         """Renvoie la date d'une écriture d'un journal Cador
         Args:
@@ -24,10 +21,9 @@ def extract_date(jour_facture, date_journal):
         #format_date = ma_date.strftime("%d/%m/%Y")
         return ma_date
     
-def validate_account(facture: dict, key: str):
+def validate_account(facture: dict):
     """Vérifie si la facture est valide"""
     return (isinstance(facture["CompteNum"], str) and 
-            facture["CompteNum"].startswith(key) and
             isinstance(facture["Debit"], (int, float)) and 
             isinstance(facture["Credit"], (int, float)))
     
@@ -54,7 +50,7 @@ def import_log_cador(filename, key):
     
     # Récupère la liste des factures de ventes
     for ligne in range(1, nb_lignes + 1):
-        if test_date(ws.cell(ligne, 5).value):
+        if isinstance(ws.cell(ligne, 5).value, datetime.datetime):
             date_journal = ws.cell(ligne, 5).value
         
         try:
@@ -70,17 +66,17 @@ def import_log_cador(filename, key):
             continue
         
         # Ajoute la facture à la liste si celle-ci est valide
-        if validate_account(facture, key):
+        if validate_account(facture):
             liste_factures.append(facture.copy())
-    
-    # Tri ma liste de factures par numéro de pièce
-    liste_factures.sort(key=lambda x: x["PieceRef"])
     
     # Fermer le classeur Excel
     wb.close()
     
     # Transforme la liste de factures en dataframe
     df = pl.DataFrame(liste_factures, orient="row")
+    
+    df = num_ecritures(df)
+    df = concat_customer(df, "C")
     
     # Renvoyer le dataframe des factures
     return df
