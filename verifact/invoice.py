@@ -1,6 +1,9 @@
 import os
 import polars as pl
-from .format_import import *
+from .format_import import (
+    FECImport, CadorImport, 
+    import_classes, import_names
+    )
 from .format_invoice import *
 from .format_export import *
 
@@ -92,30 +95,27 @@ class Invoice:
         
         return df_waste
     
+    @property
+    def import_names(self):
+        """Nom des classes d'import"""
+        return import_names
+    
     def import_invoices(self, source: str):
         """Importe une liste de factures sous forme de pl.DataFrame"""
         
-        allowed = ["CADOR", "FEC"]
-        
         source = source.upper()
-        
-        if source not in allowed:
+        if source not in self.import_names:
             msg = f"Le format {source} n'est pas reconnu"
             raise ValueError(msg)
         
-        match source:
-            case "FEC":
-                df = import_FEC(
+        # Appel la méthode d'import choisie par l'utilisateur
+        for cls in import_classes:
+            if source == cls().name():
+                self.invoices = cls(
                     self.filename,
                     self.customer_key
-                )
-            case "CADOR":
-                df = import_log_cador(
-                    self.filename, 
-                    self.customer_key
-                )
-        if df is not None:
-            self.invoices = df
+                ).invoices
+                break
     
     def search_pattern(self, case_insensitive: bool = True):
         """Filtre les factures en fonction du format de numérotation

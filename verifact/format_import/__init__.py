@@ -1,5 +1,8 @@
-from .cador_import import import_log_cador
-from .fec_import import import_FEC
-from .utils_import import num_ecritures, concat_customer
+from .base_import import BaseImport
+from .fec_import import FECImport
+from .cador_import import CadorImport
 
-__all__ = ["import_log_cador", "import_FEC", "num_ecritures", "concat_customer"]
+import_classes = [CadorImport, FECImport]
+import_names = [cls().name() for cls in import_classes]
+
+__all__ = ["CadorImport", "FECImport", "import_names"]
