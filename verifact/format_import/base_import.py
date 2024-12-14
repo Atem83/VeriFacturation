@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 from PySide6.QtWidgets import QMessageBox
-from numpy import empty
 import polars as pl
 
 class BaseImport(ABC):

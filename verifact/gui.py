@@ -100,7 +100,7 @@ class SettingsWindow(QDialog):
         self.case_toggle = QCheckBox()
         self.case_toggle.setToolTip(
             "Si la case est cochée, les préfixes et suffixes seront insensibles à la casse.\n" + 
-            "Exemples : FAC001 = fac001")
+            "Exemple : FAC001 = fac001")
         case_layout.addWidget(case_label)
         case_layout.addWidget(self.case_toggle)
         layout.addLayout(case_layout)
@@ -319,7 +319,10 @@ class MainWindow(QMainWindow):
             self.client_root
             )
         invoices.import_invoices(self.format_dropdown.currentText())
-        patterns = invoices.infer_pattern(self.min_occurrences)
+        patterns = invoices.infer_pattern(
+            count=self.min_occurrences,
+            case_insensitive=self.case_insensitive
+            )
         
         # Ecrire ces patterns dans le tableau
         for i, pattern in enumerate(patterns):

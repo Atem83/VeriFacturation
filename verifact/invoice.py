@@ -1,9 +1,6 @@
 import os
 import polars as pl
-from .format_import import (
-    FECImport, CadorImport, 
-    import_classes, import_names
-    )
+from .format_import import import_classes, import_names
 from .format_invoice import *
 from .format_export import *
 
@@ -237,22 +234,30 @@ class Invoice:
             # Ne conserve que les valeurs qui sont en doublon
             serial.duplicate = df_duplicate.filter(pl.col("n") > 0)
     
-    def infer_pattern(self, count: int = 3):
+    def infer_pattern(self, count: int = 3, case_insensitive: bool = True):
         """Retourne un dictionnaire contenant les motifs de numérotations 
         qui ont été déduits.
         
         Args:
             count (int): nombre d'occurences minimum pour considérer qu'il s'agit d'un motif de séquence de factures
+            case_insensitive (bool): indique si la recherche est insensible à la casse
         """
         
         if not isinstance(count, int):
-            raise TypeError("Le nombre d'occurence doit être un nombre entier")
+            raise TypeError("La variable 'count' n'accepte que des nombres entiers.")
+        if not isinstance(case_insensitive, bool):
+            raise TypeError("La variable 'case_insensitive' n'accepte que des booleans.")
 
         df = self.invoices
+        
+        # Si on veut ignorer la casse, transforme tout en majuscule
+        if case_insensitive:
+            df = df.with_columns(
+                pl.col("PieceRef").str.to_uppercase().alias("PieceRef")
+            )
 
         # Extraire la dernière séquence numérique
         df = df.with_columns(
-            pl.col("PieceRef").str.to_uppercase().alias("PieceRef"),
             pl.col("PieceRef")
             .str.reverse() # inverse la chaine
             .str.extract(r"(\d+)", 1)  # Extrait la première séquence numérique
