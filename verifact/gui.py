@@ -10,6 +10,8 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QShortcut, QKeySequence
 from verifact.invoice import Invoice
 import verifact.metadata as metadata
+from verifact.error import run_error
+import traceback
 
 class MenuBar(QMenuBar):
     """Créer une barre de menus."""
@@ -319,10 +321,15 @@ class MainWindow(QMainWindow):
             self.client_root
             )
         invoices.import_invoices(self.format_dropdown.currentText())
-        patterns = invoices.infer_pattern(
-            count=self.min_occurrences,
-            case_insensitive=self.case_insensitive
-            )
+        
+        try:
+            patterns = invoices.infer_pattern(
+                count=self.min_occurrences,
+                case_insensitive=self.case_insensitive
+                )
+        except Exception as e:
+            traceback_info = traceback.format_exc()
+            run_error(traceback_info)
         
         # Ecrire ces patterns dans le tableau
         for i, pattern in enumerate(patterns):
@@ -392,13 +399,16 @@ class MainWindow(QMainWindow):
                     f"la séquence '{row[0]}':\n{e}")
                 return
         
-        # Effectuer les recherches
-        invoices.search_pattern(self.case_insensitive)
-        invoices.search_missing()
-        invoices.search_duplicate()
-        
-        # Exporter les résultats
-        invoices.export()
+        try:
+            # Effectuer les recherches
+            invoices.search_pattern(self.case_insensitive)
+            invoices.search_missing()
+            invoices.search_duplicate()
+            # Exporter les résultats
+            invoices.export()
+        except Exception as e:
+            traceback_info = traceback.format_exc()
+            run_error(traceback_info)
 
     def add_row(self):
         """Ajoute une nouvelle ligne au tableau."""
