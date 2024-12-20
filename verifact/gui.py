@@ -32,21 +32,26 @@ class MenuBar(QMenuBar):
         settings_menu = self.addAction("&Paramètres")
         settings_menu.triggered.connect(self.show_settings)
         
-        # Créer le menu Aide
-        help_menu = self.addMenu("&Aide")
-        # Action À propos
-        self.about_action = help_menu.addAction("À &propos")
-        self.about_action.triggered.connect(self.show_about)
+        # Créer le menu A propos
+        help_menu = self.addAction("À &propos")
+        help_menu.triggered.connect(self.show_about)
 
     def show_about(self):
         """Affiche la boîte de dialogue À propos."""
-        QMessageBox.information(
-            self,
-            "À propos",
-            f"Version {metadata.version}\n"
-            f"Auteur : {metadata.author}\n\n"
-            f"{metadata.description}"
-        )
+        about_text = f'''
+            <style>
+                .no-margin {{
+                    margin: 0.25em;  /* Réduit l'espacement par défaut */
+                }}
+            </style>
+            <p class="no-margin">Version {metadata.version}</p>
+            <p class="no-margin">Auteur : {metadata.author}</p>
+            <p class="no-margin">Licence : {metadata.license} 
+            (<a href="{metadata.url}">code source</a>)</p>
+            <p>{metadata.description}</p>
+        '''
+        
+        QMessageBox.information(self, "À propos", about_text)
 
     def show_settings(self):
         """Affiche la fenêtre des paramètres."""

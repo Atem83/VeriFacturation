@@ -15,7 +15,8 @@ def get_project_metadata():
         "author": config.get("metadata", "author"),
         "name": config.get("metadata", "name"),
         "description": config.get("metadata", "description"),
-        "long_description": config.get("metadata", "long_description"),
+        "url": config.get("metadata", "url"),
+        "license": config.get("metadata", "license"),
     }
 
 # Exporte les variables pour un import direct
