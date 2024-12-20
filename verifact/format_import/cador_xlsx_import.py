@@ -4,14 +4,14 @@ import datetime
 import polars as pl
 from .base_import import BaseImport
 
-class CadorImport(BaseImport):
+class CadorXlsxImport(BaseImport):
     def name(self):
-        return "CADOR"
+        return "CADOR/ComptabilitéExpert (.xlsx)"
     
     def validate_format(self):
         if self.path.suffix.lower() != ".xlsx":
             self.show_error("Erreur de format", 
-                            "Le format CADOR nécessite un fichier .xlsx")
+                            "Ce format CADOR nécessite un fichier .xlsx")
             return False
         return True
 

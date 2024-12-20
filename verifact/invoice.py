@@ -100,7 +100,6 @@ class Invoice:
     def import_invoices(self, source: str):
         """Importe une liste de factures sous forme de pl.DataFrame"""
         
-        source = source.upper()
         if source not in self.import_names:
             msg = f"Le format {source} n'est pas reconnu"
             raise ValueError(msg)

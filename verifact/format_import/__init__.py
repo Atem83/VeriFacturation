@@ -1,8 +1,9 @@
 from .base_import import BaseImport
 from .fec_import import FECImport
-from .cador_import import CadorImport
+from .cador_xlsx_import import CadorXlsxImport
+from .cador_csv_import import CadorCsvImport
 
-import_classes = [CadorImport, FECImport]
+import_classes = [CadorCsvImport, CadorXlsxImport, FECImport]
 import_names = [cls().name() for cls in import_classes]
 
-__all__ = ["CadorImport", "FECImport", "import_names"]
+__all__ = ["CadorCsvImport", "CadorXlsxImport", "FECImport", "import_names"]

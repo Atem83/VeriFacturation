@@ -189,7 +189,7 @@ class MainWindow(QMainWindow):
         self.format_dropdown = QComboBox()
         self.format_dropdown.addItems(Invoice().import_names)
         self.format_dropdown.setToolTip(
-            "CADOR : Journal de vente de Cador au format .xlsx\n" + 
+            "CADOR : Journal de vente de Cador au format .xlsx ou .csv\n" + 
             "FEC : Fichier des Ecritures Comptables au format .txt")
         format_layout.addWidget(format_label)
         format_layout.addWidget(self.format_dropdown)

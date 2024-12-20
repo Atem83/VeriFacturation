@@ -8,6 +8,13 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 **Aucune mise à jour supplémentaire n'est prévue sauf si un bug est trouvé ou s'il m'est demandé de rajouter une fonctionnalité ou un format d'import.**
 
+## [1.2.0] - 2024-12-20
+### Modifications
+- Renommage du format d'import "cador_import" en "cador_xlsx_import".
+
+### Ajouts
+- Ajout du format d'import "cador_csv_import".
+
 ## [1.1.0] - 2024-12-14
 ### Modifications
 - Si plusieurs comptes clients font partie d'une seule écriture, agrége ces comptes clients en un seul compte pour éviter d'être compté en doublons.
