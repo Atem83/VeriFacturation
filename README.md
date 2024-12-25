@@ -26,14 +26,14 @@
 - Cherche les factures manquantes de chaque séquence
 - Cherche les doublons de chaque séquence
 - Exporte les résultats au format Excel
-- Possède une interface graphique mais peut aussi être utilisé en ligne de commande
 
 <br>
 
 <h2 align="center"> Formats d'import </h2>
 
-- Fichier Ecritures Comptables (.txt)
-- Journal des Ventes de Cador/ACD Groupe (.xlsx)
+- Fichier Ecritures Comptables (.txt) : "FEC"
+- Journal des Ventes de Cador/ComptabilitéExpert d'ACD (.csv) : "CADOR/ComptabilitéExpert (.csv)"
+- Journal des Ventes de Cador/ComptabilitéExpert d'ACD (.xlsx) : "CADOR/ComptabilitéExpert (.xlsx)"
 
 <br>
 
@@ -57,7 +57,7 @@ pip install VeriFacturation
 ```python
 import verifact
 
-verifact.gui.run_app()
+verifact.app()
 ```
 
 ```python
@@ -66,11 +66,11 @@ from tkinter import filedialog
 
 file = filedialog.askopenfilename(title="Sélectionner le journal de vente")
 factures = Invoice(file)
+factures.import_invoices("CADOR/ComptabilitéExpert (.csv)")
 
-factures.import_invoices("CADOR")
-
-find_pattern = factures
-patterns = find_pattern.infer_pattern()
+# Fonction optionnelle pour trouver les séquences automaticement
+# Il est aussi possible de donner manuellement les séquences des factures
+patterns = factures.infer_pattern()
 
 for pattern in patterns:
     factures.serial.add_serial(

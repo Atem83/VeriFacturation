@@ -1,5 +1,5 @@
 from .invoice import Invoice
-from .gui import *
+from .app import app
 from .error import ErrorWindow, run_error
 
-__all__ = ["Invoice", "run_app", "run_error"]
+__all__ = ["Invoice", "app", "run_error"]

@@ -8,6 +8,14 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 **Aucune mise à jour supplémentaire n'est prévue sauf si un bug est trouvé ou s'il m'est demandé de rajouter une fonctionnalité ou un format d'import.**
 
+## [1.3.0] - 2024-12-20
+### Modifications
+- Modifications mineures de l'interface "A propos"
+- Séparation du fichier gui en plusieurs fichiers
+
+### Ajouts
+- Ajout de la fonctionnalité de recherche et de téléchargement de mises à jour depuis "A propos"
+
 ## [1.2.0] - 2024-12-20
 ### Modifications
 - Renommage du format d'import "cador_import" en "cador_xlsx_import".
@@ -27,7 +35,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [1.0.5] - 2024-12-08
 ### Modifications
-- Correction de bugs mineurs dans les fichiers pour création du projet pypi
+- Correction de bugs mineurs dans les fichiers pour création du projet pip
 
 ## [1.0.0] - 2024-12-08
 - Première version de l'application avec toutes les fonctionnalités essentielles

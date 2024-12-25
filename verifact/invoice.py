@@ -98,7 +98,16 @@ class Invoice:
         return import_names
     
     def import_invoices(self, source: str):
-        """Importe une liste de factures sous forme de pl.DataFrame"""
+        """Importe une liste de factures sous forme de pl.DataFrame
+        
+        Parameters
+        ----------
+        source
+            Il y a le choix entre les formats suivants :
+            * "CADOR/ComptabilitéExpert (.csv)"
+            * "CADOR/ComptabilitéExpert (.xlsx)"
+            * "FEC"
+        """
         
         if source not in self.import_names:
             msg = f"Le format {source} n'est pas reconnu"
