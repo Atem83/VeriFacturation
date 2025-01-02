@@ -4,9 +4,7 @@ Tous les changements de ce projet seront documentés ici.
 Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
-**Le programme a atteint l'état souhaité.**
-
-**Aucune mise à jour supplémentaire n'est prévue sauf si un bug est trouvé ou s'il m'est demandé de rajouter une fonctionnalité ou un format d'import.**
+- 
 
 ## [1.3.0] - 2024-12-20
 ### Modifications

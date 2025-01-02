@@ -1,9 +1,9 @@
 import sys
 from PySide6.QtWidgets import QApplication
-from verifact.gui import MainWindow
+from verifact.gui import App
 
-def app():
+def run():
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = App()
     window.show()
     sys.exit(app.exec())

@@ -1,6 +1,6 @@
 from pathlib import Path
 from PySide6.QtWidgets import (
-    QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, 
+    QFrame, QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, 
     QLineEdit, QPushButton, QComboBox, QTableWidget, QTableWidgetItem,
     QHeaderView, QAbstractItemView, QWidget, QFileDialog, QMessageBox
 )
@@ -11,29 +11,13 @@ from .menu import MenuBar
 import verifact.metadata as metadata
 from verifact.error import run_error
 import traceback
-        
-class MainWindow(QMainWindow):
+
+class MainWindow(QFrame):
     """Fenêtre principale."""
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle(metadata.name)
-        self.setGeometry(200, 200, 360, 400)
-        
-        # Initialiser les valeurs des paramètres
-        self.client_root = "C"
-        self.min_occurrences = 3
-        self.case_insensitive = True
-
-        # Connecter l'événement de redimensionnement de la fenêtre
-        self.resizeEvent = self.on_resize
-        
-        # Permet à la fenêtre d'accepter les événements de drag-and-drop pour le fichier
-        self.setAcceptDrops(True)
-
-        # Widget principal
-        central_widget = QWidget(self)
-        self.setCentralWidget(central_widget)
-        layout = QVBoxLayout(central_widget)
+    def __init__(self, parent: QMainWindow):
+        super().__init__(parent)
+        self.app = parent
+        layout = QVBoxLayout(self)
 
         # Première ligne : Fichier
         file_layout = QHBoxLayout()
@@ -139,20 +123,6 @@ class MainWindow(QMainWindow):
         launch_search_button.clicked.connect(self.launch_search)
         layout.addWidget(launch_search_button)
 
-        # Créer la barre de menu
-        self.menu_bar = MenuBar(self)
-        self.setMenuBar(self.menu_bar)
-        
-        # Connecter les actions du menu
-        self.menu_bar.open_action.triggered.connect(self.browse_file)
-        self.menu_bar.quit_action.triggered.connect(self.close)
-
-    def on_resize(self, event):
-        """Exécute des actions lorsque la fenêtre principale est redimensionnée."""
-        #print(f"Dimensions de la fenêtre : {self.width()}x{self.height()}")
-        super().resizeEvent(event)
-        self.adjust_table_columns()  # Ajuster les colonnes à chaque redimensionnement
-
     def browse_file(self):
         """Ouvre une boîte de dialogue pour sélectionner un fichier."""
         file_dialog = QFileDialog(self)
@@ -161,20 +131,18 @@ class MainWindow(QMainWindow):
         if file_dialog.exec():
             # Récupérer le premier fichier sélectionné
             selected_file = file_dialog.selectedFiles()[0]
-            
             # Afficher le chemin dans le champ de texte
             self.file_input.setText(selected_file)
-            
             # Lancer l'auto-search automatiquement
             self.auto_search()
 
     def auto_search(self):
         """Action pour le bouton 'Séquence auto'."""
         if not self.file_input.text():
-            self.show_error_popup("Veuillez choisir un fichier.")
+            run_error("Veuillez choisir un fichier.")
             return
         elif Path(self.file_input.text()).exists() == False:
-            self.show_error_popup("Le fichier n'existe pas.")
+            run_error("Le fichier n'existe pas.")
             return
         
         # Vider le tableau
@@ -184,14 +152,14 @@ class MainWindow(QMainWindow):
         # Rechercher le pattern des différentes séquences de facturation
         invoices = Invoice(
             self.file_input.text(),
-            self.client_root
+            self.app.client_root
             )
         invoices.import_invoices(self.format_dropdown.currentText())
         
         try:
             patterns = invoices.infer_pattern(
-                count=self.min_occurrences,
-                case_insensitive=self.case_insensitive
+                count=self.app.min_occurrences,
+                case_insensitive=self.app.case_insensitive
                 )
         except Exception as e:
             traceback_info = traceback.format_exc()
@@ -214,10 +182,10 @@ class MainWindow(QMainWindow):
     def launch_search(self):
         """Lance le programme pour contrôler la numérotation des factures."""
         if not self.file_input.text():
-            self.show_error_popup("Veuillez choisir un fichier.")
+            run_error("Veuillez choisir un fichier.")
             return
         elif Path(self.file_input.text()).exists() == False:
-            self.show_error_popup("Le fichier n'existe pas.")
+            run_error("Le fichier n'existe pas.")
             return
         
         # Récupérer les pattern de facturation du tableau
@@ -238,7 +206,7 @@ class MainWindow(QMainWindow):
         # Créer mon objet Invoice à partir des informations de l'utilisateur
         invoices = Invoice(
             self.file_input.text(),
-            self.client_root
+            self.app.client_root
             )
         invoices.import_invoices(self.format_dropdown.currentText())
         for row in data:
@@ -260,14 +228,14 @@ class MainWindow(QMainWindow):
                     end=end
                 )
             except Exception as e:
-                self.show_error_popup(
-                    "Une erreur est survenue lors de la création de " +
-                    f"la séquence '{row[0]}':\n{e}")
+                msg = f"""Une erreur est survenue 
+                lors de la création de la séquence '{row[0]}':\n{e}"""
+                run_error(msg, details=e)
                 return
         
         try:
             # Effectuer les recherches
-            invoices.search_pattern(self.case_insensitive)
+            invoices.search_pattern(self.app.case_insensitive)
             invoices.search_missing()
             invoices.search_duplicate()
             # Exporter les résultats
@@ -291,7 +259,8 @@ class MainWindow(QMainWindow):
             self.table.removeRow(selected_row)
             print(f"Ligne {selected_row + 1} supprimée du tableau.")
         else:
-            self.show_error_popup("Il doit y avoir au moins deux lignes dans le tableau.")
+            msg = "La suppression d'une ligne n'est autorisée que s'il y en a au moins deux."
+            run_error(msg)
 
         self.update_delete_button_state()
 
@@ -307,7 +276,8 @@ class MainWindow(QMainWindow):
                 if i != row:
                     other_item = self.table.item(i, col)
                     if other_item and other_item.text() == value:
-                        self.show_error_popup("Ce nom est deja utilisé.")
+                        msg = f"Le nom de la séquence '{value}' est deja utilisé."
+                        run_error(msg)
                         item.setText("")
                         return
         # Restriction des colonnes "Début" et "Fin" à des valeurs numériques
@@ -318,18 +288,11 @@ class MainWindow(QMainWindow):
                     item.setText(str(value))  # Remet au format numérique
             except ValueError:
                 item.setText("")  # Remet la cellule à vide
-                self.show_error_popup("Cette cellule n'accepte que des valeurs numériques.")
+                msg = f"Cette colonne accepte uniquement des valeurs numériques."
+                run_error(msg)
         
         # Centre le texte dans toutes les cellules
         item.setTextAlignment(Qt.AlignCenter)
-
-    def show_error_popup(self, message):
-        """Affiche une popup d'erreur."""
-        popup = QMessageBox(self)
-        popup.setIcon(QMessageBox.Warning)
-        popup.setWindowTitle("Erreur")
-        popup.setText(message)
-        popup.exec()
 
     def update_delete_button_state(self):
         """Met à jour l'état du bouton de suppression."""
@@ -344,22 +307,6 @@ class MainWindow(QMainWindow):
         column_width = total_width // 5  # Divise l'espace disponible par 4 pour chaque colonne
         for col in range(self.table.columnCount()):
             self.table.setColumnWidth(col, column_width)
-
-    def dragEnterEvent(self, event):
-        """Permet de gérer l'événement de drag & drop.
-        On accepte uniquement les fichiers."""
-        if event.mimeData().hasUrls():
-            event.accept()  # Accepte l'événement de drag
-        else:
-            event.ignore()  # Ignore si ce n'est pas un fichier
-
-    def dropEvent(self, event):
-        """Gère l'événement de drop et récupère le fichier déposé."""
-        if event.mimeData().hasUrls():
-            url = event.mimeData().urls()[0]  # On récupère la première URL du mimeData
-            file_path = url.toLocalFile()  # Convertit l'URL en chemin local
-            self.file_input.setText(file_path)  # Mets le chemin dans le QLineEdit
-            self.auto_search() # lance l'auto-search après le drop
 
     def move_up(self):
         """Déplace la ligne sélectionnée vers le haut."""
