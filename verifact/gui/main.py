@@ -2,13 +2,11 @@ from pathlib import Path
 from PySide6.QtWidgets import (
     QFrame, QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, 
     QLineEdit, QPushButton, QComboBox, QTableWidget, QTableWidgetItem,
-    QHeaderView, QAbstractItemView, QWidget, QFileDialog, QMessageBox
+    QHeaderView, QAbstractItemView, QFileDialog
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QShortcut, QKeySequence
 from verifact.invoice import Invoice
-from .menu import MenuBar
-import verifact.metadata as metadata
 from verifact.error import run_error
 import traceback
 
@@ -19,21 +17,41 @@ class MainWindow(QFrame):
         self.app = parent
         layout = QVBoxLayout(self)
 
-        # Première ligne : Fichier
+        layout.addLayout(self.init_file())
+        layout.addLayout(self.init_format())
+        layout.addWidget(self.init_auto_serial())
+        layout.addWidget(self.init_table_label())
+        layout.addWidget(self.init_table())
+        layout.addLayout(self.init_create_row())
+        layout.addLayout(self.init_move_row())
+        layout.addWidget(self.init_exe())
+        
+        # Créer un raccourci clavier pour la flèche du haut
+        self.shortcut_up = QShortcut(QKeySequence(Qt.Key_Up), self)
+        self.shortcut_up.activated.connect(self.move_up)
+        
+        # Créer un raccourci clavier pour la flèche du bas
+        self.shortcut_down = QShortcut(QKeySequence(Qt.Key_Down), self)
+        self.shortcut_down.activated.connect(self.move_down)
+        
+
+    def init_file(self):
+        """Initialise le champ de texte du fichier."""
         file_layout = QHBoxLayout()
         file_label = QLabel("Fichier :")
         self.file_input = QLineEdit()
-        self.file_input.setToolTip(
-            "Vous pouvez glisser-déposer un fichier dans la fenêtre\n" +
-            "ou cliquer sur 'Parcourir'")
+        msg = ("Vous pouvez glisser-déposer un fichier dans la fenêtre\n" +
+               "ou cliquer sur 'Parcourir'")
+        self.file_input.setToolTip(msg)
         browse_button = QPushButton("Parcourir")
         browse_button.clicked.connect(self.browse_file)
         file_layout.addWidget(file_label)
         file_layout.addWidget(self.file_input)
         file_layout.addWidget(browse_button)
-        layout.addLayout(file_layout)
+        return file_layout
 
-        # Deuxième ligne : Format
+    def init_format(self):
+        """Initialise le champ format du fichier à importer."""
         format_layout = QHBoxLayout()
         format_label = QLabel("Format :")
         self.format_dropdown = QComboBox()
@@ -43,21 +61,25 @@ class MainWindow(QFrame):
             "FEC : Fichier des Ecritures Comptables au format .txt")
         format_layout.addWidget(format_label)
         format_layout.addWidget(self.format_dropdown)
-        layout.addLayout(format_layout)
+        return format_layout
 
-        # Troisième ligne : Bouton Séquence auto
+    def init_auto_serial(self):
+        """Initialise le bouton 'Séquence auto'."""
         auto_search_button = QPushButton("Séquence auto")
         auto_search_button.setToolTip(
             "Cliquez ici pour rechercher automatiquement\n" +
             "les séquences de numérotation.")
         auto_search_button.clicked.connect(self.auto_search)
-        layout.addWidget(auto_search_button)
+        return auto_search_button
 
-        # Quatrième ligne : QTableWidget
+    def init_table_label(self):
+        """Initialise le label du tableau."""
         table_label = QLabel("Séquences de numérotation")
         table_label.setAlignment(Qt.AlignCenter)  # Centrer le label
-        layout.addWidget(table_label)
+        return table_label
 
+    def init_table(self):
+        """Initialise le tableau."""
         self.table = QTableWidget(1, 5)
         self.table.setHorizontalHeaderLabels(["Nom", "Préfixe", "Suffixe", "Début", "Fin"])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)  # Colonnes redimensionnables
@@ -83,13 +105,15 @@ class MainWindow(QFrame):
             "Conseil : vérifiez que le numéro soit bien celui de la première facture.")
         self.table.horizontalHeaderItem(4).setToolTip(
             "Dernier numéro de facture de la séquence.\n" + 
-            "Conseil : vérifiez que le numéro soit bien celui de la dernière facture.")
-        layout.addWidget(self.table)
+            "Conseil : vérifiez que le numéro soit bien celui de la derniere facture.")
 
         # Centrer les valeurs dans les cellules et restreindre les colonnes "Début" et "Fin"
         self.table.itemChanged.connect(self.on_item_changed)
+        
+        return self.table
 
-        # Boutons pour ajouter/supprimer des lignes au tableau
+    def init_create_row(self):
+        """Initialise les boutons pour ajouter/supprimer des lignes au tableau."""
         table_create_row_layout = QHBoxLayout()
         add_row_button = QPushButton("Ajouter une ligne")
         add_row_button.clicked.connect(self.add_row)
@@ -98,9 +122,10 @@ class MainWindow(QFrame):
         self.delete_row_button.setEnabled(False)  # Désactiver par défaut
         table_create_row_layout.addWidget(add_row_button)
         table_create_row_layout.addWidget(self.delete_row_button)
-        layout.addLayout(table_create_row_layout)
-        
-        # Boutons pour déplacer les lignes du tableau
+        return table_create_row_layout
+
+    def init_move_row(self):
+        """Initialise les boutons pour bouger des lignes au tableau."""
         table_move_row_layout = QHBoxLayout()
         move_up_button = QPushButton("Déplacer vers le haut")
         move_up_button.clicked.connect(self.move_up)
@@ -108,20 +133,13 @@ class MainWindow(QFrame):
         move_down_button.clicked.connect(self.move_down)
         table_move_row_layout.addWidget(move_up_button)
         table_move_row_layout.addWidget(move_down_button)
-        layout.addLayout(table_move_row_layout)
-        
-        # Créer un raccourci clavier pour la flèche du haut
-        self.shortcut_up = QShortcut(QKeySequence(Qt.Key_Up), self)
-        self.shortcut_up.activated.connect(self.move_up)
-        
-        # Créer un raccourci clavier pour la flèche du bas
-        self.shortcut_down = QShortcut(QKeySequence(Qt.Key_Down), self)
-        self.shortcut_down.activated.connect(self.move_down)
+        return table_move_row_layout
 
-        # Dernière ligne : Bouton Lancer la recherche
+    def init_exe(self):
+        """Initialise le bouton 'Exécuter le programme'."""
         launch_search_button = QPushButton("Exécuter le programme")
         launch_search_button.clicked.connect(self.launch_search)
-        layout.addWidget(launch_search_button)
+        return launch_search_button
 
     def browse_file(self):
         """Ouvre une boîte de dialogue pour sélectionner un fichier."""

@@ -4,15 +4,19 @@ Tous les changements de ce projet seront documentés ici.
 Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
-- 
+- Création d'un fichier app.py avec toutes les propriétées de base du gui.
+- Création de méthodes pour initialiser les différentes composantes de MainWindow.
+- Correction de bugs mineurs. (Séquence vide)
+- Enregistrer les changements de paramètres.
+
 
 ## [1.3.0] - 2024-12-20
 ### Modifications
-- Modifications mineures de l'interface "A propos"
-- Séparation du fichier gui en plusieurs fichiers
+- Modifications mineures de l'interface "A propos".
+- Séparation du fichier gui en plusieurs fichiers.
 
 ### Ajouts
-- Ajout de la fonctionnalité de recherche et de téléchargement de mises à jour depuis "A propos"
+- Ajout de la fonctionnalité de recherche et de téléchargement de mises à jour depuis "A propos".
 
 ## [1.2.0] - 2024-12-20
 ### Modifications
@@ -29,11 +33,11 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - La fonctionnalité infer_pattern prend désormais en compte le paramètre 'case_insensitive'.
 
 ### Ajouts
-- Ajout d'exemples de fichiers d'import dans 'sample'
+- Ajout d'exemples de fichiers d'import dans 'sample'.
 
 ## [1.0.5] - 2024-12-08
 ### Modifications
-- Correction de bugs mineurs dans les fichiers pour création du projet pip
+- Correction de bugs mineurs dans les fichiers pour création du projet pip.
 
 ## [1.0.0] - 2024-12-08
-- Première version de l'application avec toutes les fonctionnalités essentielles
+- Première version de l'application avec toutes les fonctionnalités essentielles.

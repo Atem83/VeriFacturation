@@ -1,17 +1,7 @@
-from pathlib import Path
-from PySide6.QtWidgets import (
-    QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, 
-    QLineEdit, QPushButton, QComboBox, QTableWidget, QTableWidgetItem,
-    QHeaderView, QAbstractItemView, QWidget, QFileDialog, QMessageBox
-)
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QShortcut, QKeySequence
-from verifact.invoice import Invoice
+from PySide6.QtWidgets import QMainWindow
 from .menu import MenuBar
 from .main import MainWindow
 import verifact.metadata as metadata
-from verifact.error import run_error
-import traceback
 
 class App(QMainWindow):
     def __init__(self):
