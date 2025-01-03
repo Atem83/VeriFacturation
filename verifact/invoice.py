@@ -132,6 +132,8 @@ class Invoice:
         else:
             flag = ""
         
+        list_remove = [] # Permet de supprimer les serial vide
+        
         for serial in self.serial.serial_list:
             # Détermination du pattern à rechercher
             if serial.prefix is None and serial.suffix is None:
@@ -148,7 +150,12 @@ class Invoice:
                 pl.col("PieceRef").str.contains(pattern)).with_columns(
                     pl.col("PieceRef").str.extract(pattern, 1).alias("Number")
                     )
-
+            
+            # Si le serial ne contient aucune facture, on passe à la boucle suivante
+            if len(df) == 0:
+                list_remove.append(serial.name)
+                continue
+            
             # Création de la longueur de la numérotation qui servira plus tard
             # Transformation de la numérotation en format integer
             df = df.select([
@@ -180,6 +187,10 @@ class Invoice:
             
             # Sauvegarde la liste des factures dans le serial
             serial.invoices = df
+        
+        # Suppression des serial dont la liste de factures est vide
+        for serial in list_remove:
+            self.serial.del_serial(serial)
 
     def search_missing(self):
         """Recherche les numéros de factures manquants dans la liste"""

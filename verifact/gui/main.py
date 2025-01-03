@@ -228,13 +228,18 @@ class MainWindow(QFrame):
             )
         invoices.import_invoices(self.format_dropdown.currentText())
         for row in data:
+            if row[3] is not None:
+                row[3] = int(row[3])
+            if row[4] is not None:
+                row[4] = int(row[4])
+            
             try:
                 invoices.serial.add_serial(
                     name=row[0],
-                    prefix=row[1], 
-                    suffix=row[2], 
-                    start=int(row[3]), 
-                    end=int(row[4])
+                    prefix=row[1],
+                    suffix=row[2],
+                    start=row[3],
+                    end=row[4]
                 )
             except Exception as e:
                 msg = f"""Une erreur est survenue 
