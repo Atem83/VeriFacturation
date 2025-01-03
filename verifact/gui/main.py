@@ -229,25 +229,16 @@ class MainWindow(QFrame):
         invoices.import_invoices(self.format_dropdown.currentText())
         for row in data:
             try:
-                if row[3] is None:
-                    start = None
-                else:
-                    start = int(row[3])
-                if row[4] is None:
-                    end = None
-                else:
-                    end = int(row[4])
-                
                 invoices.serial.add_serial(
                     name=row[0],
                     prefix=row[1], 
                     suffix=row[2], 
-                    start=start, 
-                    end=end
+                    start=int(row[3]), 
+                    end=int(row[4])
                 )
             except Exception as e:
                 msg = f"""Une erreur est survenue 
-                lors de la création de la séquence '{row[0]}':\n{e}"""
+                lors de la création de la séquence '{row[0]}'"""
                 run_error(msg, details=e)
                 return
         
@@ -260,7 +251,7 @@ class MainWindow(QFrame):
             invoices.export()
         except Exception as e:
             traceback_info = traceback.format_exc()
-            run_error(traceback_info)
+            run_error("Une erreur est survenue", details=traceback_info)
 
     def add_row(self):
         """Ajoute une nouvelle ligne au tableau."""

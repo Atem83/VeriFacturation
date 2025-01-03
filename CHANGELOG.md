@@ -6,7 +6,8 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Création d'un fichier app.py avec toutes les propriétées de base du gui.
 - Création de méthodes pour initialiser les différentes composantes de MainWindow.
-- Correction de bugs mineurs. (Séquence vide)
+- Correction de bugs mineurs. (Séquence vide ou aucune séquence trouvée)
+- Corriger le bug de redimensionnement de run_error
 - Enregistrer les changements de paramètres.
 
 
