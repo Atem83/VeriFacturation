@@ -252,6 +252,25 @@ class MainWindow(QFrame):
             invoices.search_pattern(self.app.case_insensitive)
             invoices.search_missing()
             invoices.search_duplicate()
+            
+            # Si aucune facture n'a pu être trouvée
+            if invoices.invoices.height == 0:
+                msg = (
+                    "Aucune facture n'a pu être trouvée.\n\n" +
+                    "Vérifiez que la racine client dans les paramètres soit correcte.\n"
+                )
+                run_error(msg)
+                return
+            
+            # Si aucune facture n'a pu être traitée
+            if invoices.remaining.height == invoices.invoices.height:
+                msg = (
+                    "Aucune facture n'a pu être traitée.\n\n" +
+                    "Vérifiez que les préfixes et suffixes choisis soient corrects.\n"
+                )
+                run_error(msg)
+                return
+            
             # Exporter les résultats
             invoices.export()
         except Exception as e:

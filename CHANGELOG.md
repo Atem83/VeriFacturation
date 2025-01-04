@@ -5,7 +5,6 @@ Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## A faire
-- Ajout d'un message d'alerte quand aucune facture n'est trouvée ou aucune facture n'a pu être traitée.
 - Correction d'un bug de redimensionnement de run_error.
 - Enregistrer les changements de paramètres.
 
@@ -14,7 +13,11 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Création d'un fichier app.py avec toutes les propriétées de base du gui.
 - Création de méthodes pour initialiser les différentes composantes de MainWindow.
 - Correction d'un bug lorsqu'une séquence choisie ne contient aucune facture.
+
+### Ajouts
 - Les séquences ne contenant aucune facture seront désormais ignorées.
+- Ajout d'un message d'alerte lorsqu'aucune facture n'a pu être traitée.
+- Ajout d'un message d'alerte lorsqu'aucune facture n'est trouvée
 
 ## [1.3.0] - 2024-12-20
 ### Modifications

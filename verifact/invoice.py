@@ -78,7 +78,7 @@ class Invoice:
     def remaining(self):
         """Numéros de facture dont le format n'a pas été reconnu"""
         
-        df_waste = self.invoices
+        df_waste : pl.DataFrame = self.invoices
         for serial in self.serial.serial_list:
             if serial.invoices is None:
                 msg = "Il faut utiliser search_pattern avant d'utiliser cette fonction"
