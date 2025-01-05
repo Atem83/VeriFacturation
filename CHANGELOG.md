@@ -5,7 +5,6 @@ Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## A faire
-- Correction d'un bug de redimensionnement de run_error.
 - Enregistrer les changements de paramètres.
 
 ## [1.3.1] - 2024-01-03
@@ -13,11 +12,13 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Création d'un fichier app.py avec toutes les propriétées de base du gui.
 - Création de méthodes pour initialiser les différentes composantes de MainWindow.
 - Correction d'un bug lorsqu'une séquence choisie ne contient aucune facture.
+- Correction d'un bug de redimensionnement de run_error.
+- Modifications mineures de l'interface run_error.
 
 ### Ajouts
 - Les séquences ne contenant aucune facture seront désormais ignorées.
-- Ajout d'un message d'alerte lorsqu'aucune facture n'a pu être traitée.
-- Ajout d'un message d'alerte lorsqu'aucune facture n'est trouvée
+- Ajout d'un message d'erreur lorsqu'aucune facture n'a pu être traitée.
+- Ajout d'un message d'erreur lorsqu'aucune facture n'est trouvée
 
 ## [1.3.0] - 2024-12-20
 ### Modifications
@@ -33,7 +34,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Ajouts
 - Ajout du format d'import "cador_csv_import".
-- Ajout d'une fenêtre d'erreur pour afficher les erreurs d'import.
+- Ajout d'un message d'erreur pour afficher les erreurs d'import.
 
 ## [1.1.0] - 2024-12-14
 ### Modifications

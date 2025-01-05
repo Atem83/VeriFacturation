@@ -33,7 +33,6 @@ class MainWindow(QFrame):
         # Créer un raccourci clavier pour la flèche du bas
         self.shortcut_down = QShortcut(QKeySequence(Qt.Key_Down), self)
         self.shortcut_down.activated.connect(self.move_down)
-        
 
     def init_file(self):
         """Initialise le champ de texte du fichier."""
@@ -157,10 +156,10 @@ class MainWindow(QFrame):
     def auto_search(self):
         """Action pour le bouton 'Séquence auto'."""
         if not self.file_input.text():
-            run_error("Veuillez choisir un fichier.")
+            run_error("Veuillez choisir un fichier.\n")
             return
         elif Path(self.file_input.text()).exists() == False:
-            run_error("Le fichier n'existe pas.")
+            run_error("Le fichier n'existe pas.\n")
             return
         
         # Vider le tableau
@@ -200,10 +199,10 @@ class MainWindow(QFrame):
     def launch_search(self):
         """Lance le programme pour contrôler la numérotation des factures."""
         if not self.file_input.text():
-            run_error("Veuillez choisir un fichier.")
+            run_error("Veuillez choisir un fichier.\n")
             return
         elif Path(self.file_input.text()).exists() == False:
-            run_error("Le fichier n'existe pas.")
+            run_error("Le fichier n'existe pas.\n")
             return
         
         # Récupérer les pattern de facturation du tableau
@@ -243,7 +242,7 @@ class MainWindow(QFrame):
                 )
             except Exception as e:
                 msg = f"""Une erreur est survenue 
-                lors de la création de la séquence '{row[0]}'"""
+                lors de la création de la séquence '{row[0]}'\n"""
                 run_error(msg, details=e)
                 return
         
@@ -275,7 +274,7 @@ class MainWindow(QFrame):
             invoices.export()
         except Exception as e:
             traceback_info = traceback.format_exc()
-            run_error("Une erreur est survenue", details=traceback_info)
+            run_error("Une erreur est survenue\n", details=traceback_info)
 
     def add_row(self):
         """Ajoute une nouvelle ligne au tableau."""
@@ -292,7 +291,7 @@ class MainWindow(QFrame):
             self.table.removeRow(selected_row)
             print(f"Ligne {selected_row + 1} supprimée du tableau.")
         else:
-            msg = "La suppression d'une ligne n'est autorisée que s'il y en a au moins deux."
+            msg = "La suppression d'une ligne n'est autorisée que s'il y en a au moins deux.\n"
             run_error(msg)
 
         self.update_delete_button_state()
@@ -309,7 +308,7 @@ class MainWindow(QFrame):
                 if i != row:
                     other_item = self.table.item(i, col)
                     if other_item and other_item.text() == value:
-                        msg = f"Le nom de la séquence '{value}' est deja utilisé."
+                        msg = f"Le nom de la séquence '{value}' est deja utilisé.\n"
                         run_error(msg)
                         item.setText("")
                         return
@@ -321,7 +320,7 @@ class MainWindow(QFrame):
                     item.setText(str(value))  # Remet au format numérique
             except ValueError:
                 item.setText("")  # Remet la cellule à vide
-                msg = f"Cette colonne accepte uniquement des valeurs numériques."
+                msg = f"Cette colonne accepte uniquement des valeurs numériques.\n"
                 run_error(msg)
         
         # Centre le texte dans toutes les cellules
