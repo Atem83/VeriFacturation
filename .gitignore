@@ -12,3 +12,4 @@ config pyinstaller.json
 
 # Others
 launch.py
+Paramètres.json

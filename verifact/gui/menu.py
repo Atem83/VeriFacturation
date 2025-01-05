@@ -35,13 +35,6 @@ class MenuBar(QMenuBar):
     def show_settings(self):
         """Affiche la fenêtre des paramètres."""
         settings_dialog = SettingsWindow(self)
-        # Initialiser avec les valeurs actuelles de MainWindow
-        settings_dialog.client_input.setText(self.app.client_root)
-        settings_dialog.occurences_input.setText(str(self.app.min_occurrences))
-        settings_dialog.case_toggle.setChecked(self.app.case_insensitive)
-        
-        if settings_dialog.exec() == QDialog.Accepted:
-            # Mettre à jour les valeurs dans MainWindow
-            self.app.client_root = settings_dialog.client_input.text()
-            self.app.min_occurrences = int(settings_dialog.occurences_input.text())
-            self.app.case_insensitive = settings_dialog.case_toggle.isChecked()
+        if (settings_dialog.exec() == QDialog.Accepted and
+            self.app.main_frame.file_input.text()):
+            self.app.main_frame.auto_search()

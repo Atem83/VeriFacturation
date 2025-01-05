@@ -169,14 +169,14 @@ class MainWindow(QFrame):
         # Rechercher le pattern des différentes séquences de facturation
         invoices = Invoice(
             self.file_input.text(),
-            self.app.client_root
+            self.app.settings.client_root
             )
         invoices.import_invoices(self.format_dropdown.currentText())
         
         try:
             patterns = invoices.infer_pattern(
-                count=self.app.min_occurrences,
-                case_insensitive=self.app.case_insensitive
+                count=self.app.settings.min_occurrences,
+                case_insensitive=self.app.settings.case_insensitive
                 )
         except Exception as e:
             traceback_info = traceback.format_exc()
@@ -223,7 +223,7 @@ class MainWindow(QFrame):
         # Créer mon objet Invoice à partir des informations de l'utilisateur
         invoices = Invoice(
             self.file_input.text(),
-            self.app.client_root
+            self.app.settings.client_root
             )
         invoices.import_invoices(self.format_dropdown.currentText())
         for row in data:
@@ -248,7 +248,7 @@ class MainWindow(QFrame):
         
         try:
             # Effectuer les recherches
-            invoices.search_pattern(self.app.case_insensitive)
+            invoices.search_pattern(self.app.settings.case_insensitive)
             invoices.search_missing()
             invoices.search_duplicate()
             

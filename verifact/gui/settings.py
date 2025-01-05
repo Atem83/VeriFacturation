@@ -1,12 +1,14 @@
 from PySide6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, 
-    QPushButton, QMessageBox, QDialog, QCheckBox
+    QPushButton, QDialog, QCheckBox
 )
+from verifact.error import run_error
 
 class SettingsWindow(QDialog):
     """Fenêtre des paramètres."""
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.menu = parent
         self.setWindowTitle("Paramètres")
         self.setModal(True)
         self.setGeometry(200, 200, 245, 150)
@@ -18,6 +20,7 @@ class SettingsWindow(QDialog):
         client_layout = QHBoxLayout()
         client_label = QLabel("Racine client :")
         self.client_input = QLineEdit()
+        self.client_input.setText(self.menu.app.settings.client_root)
         self.client_input.setToolTip(
             "Racine des comptes clients dans le logiciel.\n"
             "Exemples : Cador = C ; Quadra = 411")
@@ -29,6 +32,8 @@ class SettingsWindow(QDialog):
         occurences_layout = QHBoxLayout()
         occurences_label = QLabel("Nombre minimum\nd'occurences d'une séquence :")
         self.occurences_input = QLineEdit()
+        self.occurences_input.setText(str(self.menu.app.settings.min_occurrences))
+        self.occurences_input.textChanged.connect(self.occ_changed)
         self.occurences_input.setToolTip(
             "Il s'agit du nombre de factures qui doivent partager le préfixe/suffixe choisi\n" +
             "pour considérer une séquence comme valide par 'Séquence auto'.\n\n" +
@@ -41,6 +46,7 @@ class SettingsWindow(QDialog):
         case_layout = QHBoxLayout()
         case_label = QLabel("Séquence insensible à la casse :")
         self.case_toggle = QCheckBox()
+        self.case_toggle.setChecked(self.menu.app.settings.case_insensitive)
         self.case_toggle.setToolTip(
             "Si la case est cochée, les préfixes et suffixes seront insensibles à la casse.\n" + 
             "Exemple : FAC001 = fac001")
@@ -60,29 +66,32 @@ class SettingsWindow(QDialog):
         buttons_layout.addWidget(ok_button)
         buttons_layout.addWidget(cancel_button)
         layout.addLayout(buttons_layout)
+    
+    def occ_changed(self, text):
+        """Contrôle les valeurs autorisées pour le minimum d'occurences."""
+        try:
+            text = int(text)
+        except ValueError:
+            run_error("Le minimum d'occurences doit être un nombre entier.")
+            self.occurences_input.setText(
+                str(self.menu.app.settings.min_occurrences)
+                )
+            return
         
+        if text < 1:
+            run_error("Le minimum d'occurences doit être un nombre entier supérieur à 0.")
+            self.occurences_input.setText(
+                str(self.menu.app.settings.min_occurrences)
+                )
+    
     def on_ok(self):
         """Gérer le clic sur OK."""
-        # Vérifier que occurences_input est un entier positif
-        try:
-            occurences = int(self.occurences_input.text())
-            if occurences <= 0:
-                raise ValueError("La valeur doit être supérieure à 0")
-        except ValueError:
-            QMessageBox.warning(
-                self,
-                "Erreur de saisie",
-                "Le nombre minimum d'occurences doit être un entier supérieur à 0."
-            )
-            self.occurences_input.setText(self.parent().parent.min_occurrences)
-            return
-            
+        self.menu.app.settings.client_root = str(self.client_input.text())
+        self.menu.app.settings.min_occurrences = int(self.occurences_input.text())
+        self.menu.app.settings.case_insensitive = bool(self.case_toggle.isChecked())
+        self.menu.app.settings.save()
         self.accept()
-        
+    
     def on_cancel(self):
         """Gérer le clic sur Annuler."""
-        # Remettre les valeurs par défaut
-        self.client_input.setText(self.parent().parent.client_root)
-        self.occurences_input.setText(str(self.parent().parent.min_occurrences))
-        self.case_toggle.setChecked(self.parent().parent.case_insensitive)
         self.reject()

@@ -5,9 +5,9 @@ Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## A faire
-- Enregistrer les changements de paramètres.
+- Rien de prévu
 
-## [1.3.1] - 2024-01-03
+## [1.4.0] - 2024-01-05
 ### Modifications
 - Création d'un fichier app.py avec toutes les propriétées de base du gui.
 - Création de méthodes pour initialiser les différentes composantes de MainWindow.
@@ -19,6 +19,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Les séquences ne contenant aucune facture seront désormais ignorées.
 - Ajout d'un message d'erreur lorsqu'aucune facture n'a pu être traitée.
 - Ajout d'un message d'erreur lorsqu'aucune facture n'est trouvée
+- Enregistrer les changements de paramètres.
 
 ## [1.3.0] - 2024-12-20
 ### Modifications

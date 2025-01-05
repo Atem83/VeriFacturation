@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QMainWindow
 from .menu import MenuBar
 from .main import MainWindow
+from verifact.settings import Settings
 import verifact.metadata as metadata
 
 class App(QMainWindow):
@@ -18,9 +19,8 @@ class App(QMainWindow):
         self.setMenuBar(self.menu_bar)
         
         # Initialiser les valeurs des paramètres
-        self.client_root = "C"
-        self.min_occurrences = 3
-        self.case_insensitive = True
+        self.settings = Settings()
+        self.settings.load()
         
         # Connecter l'événement de redimensionnement de la fenêtre
         self.resizeEvent = self.on_resize
