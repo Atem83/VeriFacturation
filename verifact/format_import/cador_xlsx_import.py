@@ -3,6 +3,7 @@ from typing import Dict, Any
 import datetime
 import polars as pl
 from .base_import import BaseImport
+from verifact.error import run_error
 
 class CadorXlsxImport(BaseImport):
     def name(self):
@@ -10,8 +11,7 @@ class CadorXlsxImport(BaseImport):
     
     def validate_format(self):
         if self.path.suffix.lower() != ".xlsx":
-            self.show_error("Erreur de format", 
-                            "Ce format CADOR nécessite un fichier .xlsx")
+            run_error("Ce format CADOR nécessite un fichier .xlsx")
             return False
         return True
 
@@ -21,7 +21,7 @@ class CadorXlsxImport(BaseImport):
         
         # Vérifie que le type de fichier est correct
         if ws.cell(1, 1).value != 'Edition Journaux':
-            self.show_error("Erreur", "Il ne s'agit pas d'un journal de vente")
+            run_error("Il ne s'agit pas d'un journal de vente")
             return []
         
         nb_lignes = ws.max_row

@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from PySide6.QtWidgets import QMessageBox
 import polars as pl
+from verifact.error import run_error
 
 class BaseImport(ABC):
     def __init__(self, filename: str | None = None, key: str = 'C'):
@@ -41,10 +42,6 @@ class BaseImport(ABC):
         df = self.aggregate_key(df, self.key)
         return df
     
-    def show_error(self, title: str, message: str) -> None:
-        """Affiche une boîte de dialogue d'erreur"""
-        QMessageBox.critical(None, title, message)
-    
     def empty_df(self) -> pl.DataFrame:
         """Créer un dataframe vide"""
         return pl.DataFrame(schema={
@@ -65,7 +62,8 @@ class BaseImport(ABC):
         try:
             self.process_file()
         except Exception as e:
-            self.show_error("Erreur d'import", f"Une erreur est survenue : {str(e)}")
+            run_error("Une erreur est survenue.", details=str(e))
+            print(e)
             self._sales = self.empty_df()
             return
     

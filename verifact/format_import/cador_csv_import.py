@@ -1,5 +1,6 @@
 import polars as pl
 from .base_import import BaseImport
+from verifact.error import run_error
 
 class CadorCsvImport(BaseImport):
     def name(self):
@@ -7,8 +8,7 @@ class CadorCsvImport(BaseImport):
     
     def validate_format(self):
         if self.path.suffix.lower() != ".csv":
-            self.show_error("Erreur de format", 
-                            "Ce format CADOR nécessite un fichier .csv")
+            run_error("Ce format CADOR nécessite un fichier .csv")
             return False
         return True
 
@@ -18,13 +18,13 @@ class CadorCsvImport(BaseImport):
 
         # Vérifie que le type de fichier est correct
         if first_line.strip() != 'Edition Journaux':
-            self.show_error("Erreur", "Il ne s'agit pas d'un journal de vente")
+            run_error("Il ne s'agit pas d'un journal de vente")
             return []
         
         # Importation des données
         df = pl.read_csv(self.filename, separator=";", 
                          skip_rows=1, encoding='ANSI', 
-                         decimal_comma=True
+                         decimal_comma=True, ignore_errors=True
                          )
         
         # Renommer les colonnes

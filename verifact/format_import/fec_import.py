@@ -1,6 +1,7 @@
 import polars as pl
 from typing import List
 from .base_import import BaseImport
+from verifact.error import run_error
 
 class FECImport(BaseImport):
     def name(self):
@@ -8,7 +9,7 @@ class FECImport(BaseImport):
     
     def validate_format(self):
         if self.path.suffix.lower() != ".txt":
-            self.show_error("Erreur de format", "Le format FEC nécessite un fichier .txt")
+            run_error("Le format FEC nécessite un fichier .txt")
             return False
         return True
     
@@ -22,7 +23,7 @@ class FECImport(BaseImport):
         elif nb_pipe > nb_tab:
             return '|'
         else:
-            self.show_error("Erreur de format", "Séparateur FEC non identifié")
+            run_error("Séparateur FEC non identifié")
             return ''
     
     def process_file(self):
@@ -42,9 +43,7 @@ class FECImport(BaseImport):
                 # Correspond à l'encodage des FEC de Sage
                 df = pl.read_csv(self.filename, separator=separator, encoding='ISO-8859-1')
             except Exception as e:
-                self.show_error(
-                    "Erreur de lecture", 
-                    f"Impossible de lire le fichier : {str(e)}")
+                run_error("Impossible de lire le fichier.", details= str(e))
                 return self.empty_df()
 
         # Retraitement des colonnes "Montant" et "Sens"

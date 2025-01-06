@@ -180,7 +180,8 @@ class MainWindow(QFrame):
                 )
         except Exception as e:
             traceback_info = traceback.format_exc()
-            run_error(details=traceback_info)
+            msg = "Une erreur est survenue dans la recherche automatique de séquences"
+            run_error(message=msg, details=traceback_info)
         
         # Ecrire ces patterns dans le tableau
         for i, pattern in enumerate(patterns):
