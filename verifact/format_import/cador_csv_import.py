@@ -21,10 +21,21 @@ class CadorCsvImport(BaseImport):
             run_error("Il ne s'agit pas d'un journal de vente")
             return []
         
+        # Je lui donne un schéma pour éviter des erreurs de infer_schema
+        schema = {
+            "Jour": pl.String,
+            "Pièce": pl.String,
+            "Libellé de l'écriture": pl.String,
+            "Compte": pl.String,
+            "Intitulé": pl.String,
+            "Débit": pl.Float64,
+            "Crédit": pl.Float64
+        }
+        
         # Importation des données
         df = pl.read_csv(self.filename, separator=";", 
                          skip_rows=1, encoding='ANSI', 
-                         decimal_comma=True, ignore_errors=True
+                         decimal_comma=True, schema=schema
                          )
         
         # Renommer les colonnes

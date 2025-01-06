@@ -37,7 +37,7 @@ class CadorXlsxImport(BaseImport):
                 facture = {
                     "PieceRef": str(ws.cell(ligne, 2).value),
                     "EcritureDate": self.extract_date(ws.cell(ligne, 1).value, date_journal),
-                    "EcritureLib": ws.cell(ligne, 3).value,
+                    "EcritureLib": str(ws.cell(ligne, 3).value),
                     "CompteNum": str(ws.cell(ligne, 4).value),
                     "Debit": float(str(ws.cell(ligne, 6).value)),
                     "Credit": float(str(ws.cell(ligne, 7).value))

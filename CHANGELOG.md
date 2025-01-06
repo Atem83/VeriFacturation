@@ -8,6 +8,8 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Corriger les bugs rencontrés sur certains fichiers
 - Afficher une fenêtre de chargement au lancement du logiciel
 
+## Faits
+- Correction d'un bug d'import lorsque PieceRef n'est pas reconnu comme un dtype pl.String.
 
 ## [1.4.0] - 2024-01-05
 ### Modifications

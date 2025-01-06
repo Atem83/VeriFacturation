@@ -36,12 +36,15 @@ class FECImport(BaseImport):
             return self.empty_df()
 
         # Lecture du fichier avec polars
+        # infer_schema=False permet de cast tout en String pour éviter des erreurs
+        # et on change le type de colonne plus tard
         try:
-            df = pl.read_csv(self.filename, separator=separator)
+            df = pl.read_csv(self.filename, separator=separator, infer_schema=False)
         except pl.exceptions.ComputeError:
             try:
                 # Correspond à l'encodage des FEC de Sage
-                df = pl.read_csv(self.filename, separator=separator, encoding='ISO-8859-1')
+                df = pl.read_csv(self.filename, separator=separator, 
+                                 encoding='ISO-8859-1', infer_schema=False)
             except Exception as e:
                 run_error("Impossible de lire le fichier.", details= str(e))
                 return self.empty_df()
