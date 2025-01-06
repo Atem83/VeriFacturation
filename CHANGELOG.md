@@ -5,7 +5,9 @@ Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## A faire
-- Rien de prévu
+- Corriger les bugs rencontrés sur certains fichiers
+- Afficher une fenêtre de chargement au lancement du logiciel
+
 
 ## [1.4.0] - 2024-01-05
 ### Modifications

@@ -33,7 +33,6 @@ class SettingsWindow(QDialog):
         occurences_label = QLabel("Nombre minimum\nd'occurences d'une séquence :")
         self.occurences_input = QLineEdit()
         self.occurences_input.setText(str(self.menu.app.settings.min_occurrences))
-        self.occurences_input.textChanged.connect(self.occ_changed)
         self.occurences_input.setToolTip(
             "Il s'agit du nombre de factures qui doivent partager le préfixe/suffixe choisi\n" +
             "pour considérer une séquence comme valide par 'Séquence auto'.\n\n" +
@@ -67,10 +66,10 @@ class SettingsWindow(QDialog):
         buttons_layout.addWidget(cancel_button)
         layout.addLayout(buttons_layout)
     
-    def occ_changed(self, text):
-        """Contrôle les valeurs autorisées pour le minimum d'occurences."""
+    def on_ok(self):
+        """Gérer le clic sur OK."""
         try:
-            text = int(text)
+            occ = int(self.occurences_input.text())
         except ValueError:
             run_error("Le minimum d'occurences doit être un nombre entier.")
             self.occurences_input.setText(
@@ -78,19 +77,18 @@ class SettingsWindow(QDialog):
                 )
             return
         
-        if text < 1:
+        if occ < 1:
             run_error("Le minimum d'occurences doit être un nombre entier supérieur à 0.")
             self.occurences_input.setText(
                 str(self.menu.app.settings.min_occurrences)
                 )
-    
-    def on_ok(self):
-        """Gérer le clic sur OK."""
-        self.menu.app.settings.client_root = str(self.client_input.text())
-        self.menu.app.settings.min_occurrences = int(self.occurences_input.text())
-        self.menu.app.settings.case_insensitive = bool(self.case_toggle.isChecked())
-        self.menu.app.settings.save()
-        self.accept()
+            return
+        else:
+            self.menu.app.settings.client_root = str(self.client_input.text())
+            self.menu.app.settings.min_occurrences = occ
+            self.menu.app.settings.case_insensitive = bool(self.case_toggle.isChecked())
+            self.menu.app.settings.save()
+            self.accept()
     
     def on_cancel(self):
         """Gérer le clic sur Annuler."""
