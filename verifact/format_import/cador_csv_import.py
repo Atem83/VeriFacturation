@@ -15,9 +15,9 @@ class CadorCsvImport(BaseImport):
     def process_file(self):
         with open(self.filename, mode='r', encoding='ANSI') as file:
             first_line = file.readline()  # Lire la première ligne
-
+        print(first_line.strip())
         # Vérifie que le type de fichier est correct
-        if first_line.strip() != 'Edition Journaux':
+        if first_line.strip().replace(';','') != 'Edition Journaux':
             run_error("Il ne s'agit pas d'un journal de vente")
             return []
         
