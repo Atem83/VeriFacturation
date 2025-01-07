@@ -5,10 +5,10 @@ Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## A faire
-- Corriger les bugs rencontrés sur certains fichiers
 - Afficher une fenêtre de chargement au lancement du logiciel
 
-## Faits
+## [1.4.1] - 2024-01-07
+### Modifications
 - Correction d'un bug d'import lorsque PieceRef n'est pas reconnu comme un dtype pl.String.
 
 ## [1.4.0] - 2024-01-05
