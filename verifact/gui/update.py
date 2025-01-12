@@ -3,12 +3,47 @@ import os
 import sys
 from PySide6.QtWidgets import QMessageBox
 from packaging.version import Version
+from .progressbar import LoadingWindow
 import verifact.metadata as metadata
 
 class UpdateManager:
-    def __init__(self, repo_owner, repo_name):
+    def __init__(self, repo_owner, repo_name, parent=None):
+        self.about = parent
         self.repo_owner = repo_owner
         self.repo_name = repo_name
+        self._file_size = 0
+        self._downloaded_size = 0
+
+    @property
+    def file_size(self):
+        """Taille du fichier à télécharger."""
+        return self._file_size
+    
+    @file_size.setter
+    def file_size(self, value:int):
+        if not isinstance(value, int):
+            msg = "La taille du fichier doit être un nombre entier"
+            raise TypeError(msg)
+        self._file_size = value
+
+    @property
+    def downloaded_size(self):
+        """Taille du fichier téléchargé."""
+        return self._downloaded_size
+
+    @downloaded_size.setter
+    def downloaded_size(self, value:int):
+        if not isinstance(value, int):
+            msg = "La taille du fichier doit être un nombre entier"
+            raise TypeError(msg)
+        self._downloaded_size = value
+
+    @property
+    def progress(self):
+        """Pourcentage de téléchargement."""
+        if self.file_size == 0:
+            return 0
+        return int(self.downloaded_size / self.file_size * 100)
 
     def get_latest_release_info(self):
         """
@@ -60,8 +95,11 @@ class UpdateManager:
             print("Aucun fichier .exe trouvé dans la dernière version.")
             return
         print(f"Téléchargement de la nouvelle version depuis : {exe_url}")
+        
         response = requests.get(exe_url, stream=True)
         response.raise_for_status()
+        self.file_size = int(response.headers.get("content-length", 0))
+        
         # Définir le chemin du dossier et du fichier
         new_filename = str(os.path.basename(exe_url))
         old_file_path = os.path.abspath(sys.executable)
@@ -70,10 +108,19 @@ class UpdateManager:
         # Créer le dossier s'il n'existe pas
         os.makedirs(new_filedir, exist_ok=True)
         
+        # Affiche la barre de progression
+        loading_window = LoadingWindow(self.about)
+        loading_window.show()
+        
         # Écrire le fichier téléchargé
         with open(file_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
+                self.downloaded_size += len(chunk)
+                loading_window.update_progress(self.progress)
+                print(f"Progression : {self.progress}%", end="\r")
+        
+        loading_window.close()
         print("Téléchargement de la mise à jour terminé.")
         self.show_file_location_message(new_filedir)
         sys.exit()  # Ferme le programme

@@ -5,13 +5,18 @@ Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## A faire
-- Afficher une fenêtre de chargement au lancement du logiciel
+- Rien pour le moment.
 
-## [1.4.1] - 2024-01-07
+## [1.4.2] - 2025-01-12
+### Ajouts
+- Afficher un splash screen lors du chargement de l'application.
+- Affiche une fenêtre avec le % de téléchargement de la mise à jour.
+
+## [1.4.1] - 2025-01-07
 ### Modifications
 - Correction d'un bug d'import lorsque PieceRef n'est pas reconnu comme un dtype pl.String.
 
-## [1.4.0] - 2024-01-05
+## [1.4.0] - 2025-01-05
 ### Modifications
 - Création d'un fichier app.py avec toutes les propriétées de base du gui.
 - Création de méthodes pour initialiser les différentes composantes de MainWindow.

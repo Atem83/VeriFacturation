@@ -113,7 +113,7 @@ class AboutWindow(QDialog):
         
         repo_owner, repo_name = self.extract_repo_info(metadata.url)
         
-        updater = UpdateManager(repo_owner, repo_name)
+        updater = UpdateManager(repo_owner, repo_name, self)
         if updater.check_updates():
             self.check_update_button.setText("Téléchargement de la mise à jour")
             QApplication.processEvents()
