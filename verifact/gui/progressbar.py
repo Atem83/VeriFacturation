@@ -58,21 +58,3 @@ class LoadingWindow(QDialog):
     def setText(self, text):
         """Permet de modifier le texte de la fenêtre."""
         self.label.setText(text)
-
-def main():
-    app = QApplication(sys.argv)
-    loading_window = LoadingWindow()
-    loading_window.show()
-
-    # Simuler le chargement
-    for i in range(101):
-        time.sleep(0.05)  # Simule un délai pour le chargement
-        loading_window.update_progress(i)
-
-    if loading_window.progress_bar.value() == 100:
-        QTimer.singleShot(0, loading_window.close)
-    
-    sys.exit(app.exec())
-
-if __name__ == "__main__":
-    main()
