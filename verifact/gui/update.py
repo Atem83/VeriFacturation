@@ -1,6 +1,7 @@
 import requests
 import os
 import sys
+import subprocess
 from PySide6.QtWidgets import QMessageBox
 from packaging.version import Version
 from .progressbar import LoadingWindow
@@ -13,6 +14,7 @@ class UpdateManager:
         self.repo_name = repo_name
         self._file_size = 0
         self._downloaded_size = 0
+        self.dir_update = "mise à jour"
 
     @property
     def file_size(self):
@@ -45,7 +47,7 @@ class UpdateManager:
             return 0
         return int(self.downloaded_size / self.file_size * 100)
 
-    def get_latest_release_info(self):
+    def get_latest_release_info(self, extension=".exe"):
         """
         Récupère les informations de la dernière version publiée sur GitHub, y compris le tag et l'URL du fichier .exe.
 
@@ -61,7 +63,7 @@ class UpdateManager:
             assets = data.get("assets", [])
             exe_url = None
             for asset in assets:
-                if asset.get("name", "").lower().endswith(".exe"):
+                if asset.get("name", "").lower().endswith(extension):
                     exe_url = asset.get("browser_download_url")
                     break
             return tag_name, exe_url
@@ -100,11 +102,17 @@ class UpdateManager:
         response.raise_for_status()
         self.file_size = int(response.headers.get("content-length", 0))
         
-        # Définir le chemin du dossier et du fichier
+        # Vérifie si le programme est un exécutable ou un fichier python
+        if hasattr(sys, 'frozen'):
+            old_file_path = os.path.abspath(sys.executable) # .exe
+        else:
+            old_file_path = os.path.abspath(__file__) # .py
+        
+        # Définir le chemin du dossier et du fichier mis à jour
         new_filename = str(os.path.basename(exe_url))
-        old_file_path = os.path.abspath(sys.executable)
-        new_filedir = os.path.join(os.path.dirname(old_file_path), "mise à jour")
-        file_path = os.path.join(new_filedir, new_filename)
+        new_filedir = os.path.join(os.path.dirname(old_file_path), self.dir_update)
+        new_file_path = os.path.join(new_filedir, new_filename)
+        
         # Créer le dossier s'il n'existe pas
         os.makedirs(new_filedir, exist_ok=True)
         
@@ -112,17 +120,45 @@ class UpdateManager:
         loading_window = LoadingWindow(self.about)
         loading_window.show()
         
-        # Écrire le fichier téléchargé
-        with open(file_path, "wb") as f:
+        # Téléchargement du fichier mis à jour
+        with open(new_file_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
                 self.downloaded_size += len(chunk)
                 loading_window.update_progress(self.progress)
-                print(f"Progression : {self.progress}%", end="\r")
+                print(f"Progression mise à jour : {self.progress}%", end="\r")
+        
+        # Téléchargement du fichier batch
+        _, exe_url = self.get_latest_release_info(extension=".bat")
+        if os.name == 'nt' and os.path.exists(new_file_path) and exe_url:
+            batch_path = os.path.join(new_filedir, "update.bat")
+            response_batch = requests.get(exe_url, stream=True)
+            response_batch.raise_for_status()
+            self.file_size = int(response_batch.headers.get("content-length", 0))
+            self.downloaded_size = 0
+            
+            with open(batch_path, "wb") as f:
+                for chunk in response_batch.iter_content(chunk_size=8192):
+                    f.write(chunk)
+                    self.downloaded_size += len(chunk)
+                    loading_window.update_progress(self.progress)
+                    print(f"Progression batch : {self.progress}%", end="\r")
+            
+            batch_success = True
+        else:
+            print("Aucun fichier batch rencontré dans la dernière version.")
+            batch_success = False
         
         loading_window.close()
         print("Téléchargement de la mise à jour terminé.")
-        self.show_file_location_message(new_filedir)
+        
+        if hasattr(sys, 'frozen') and batch_success:
+            print("Chemin de l'ancienne version :", old_file_path)
+            print("Chemin du fichier mis à jour :", new_file_path)
+            subprocess.run([batch_path, old_file_path, new_file_path])
+        else:
+            self.show_file_location_message(new_filedir)
+        
         sys.exit()  # Ferme le programme
     
     def show_file_location_message(self, file_path):

@@ -5,11 +5,12 @@ Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## A faire
-- Rien pour le moment.
+- Supprime l'ancien fichier .exe et déplace le nouveau lors d'une mise à jour à l'aide d'un fichier .bat
+- Rajoute une fenêtre de détection automatique des mises à jour au lancement de l'application
 
 ## [1.4.2] - 2025-01-12
 ### Ajouts
-- Afficher un splash screen lors du chargement de l'application.
+- Affiche un splash screen lors du chargement de l'application.
 - Affiche une fenêtre avec le % de téléchargement de la mise à jour.
 
 ## [1.4.1] - 2025-01-07
