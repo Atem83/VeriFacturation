@@ -129,22 +129,20 @@ class UpdateManager:
                 print(f"Progression mise à jour : {self.progress}%", end="\r")
         
         # Téléchargement du fichier batch
-        _, exe_url = self.get_latest_release_info(extension=".bat")
-        if os.name == 'nt' and os.path.exists(new_file_path) and exe_url:
+        batch_url = f"https://raw.githubusercontent.com/{self.repo_owner}/{self.repo_name}/main/update.bat"
+        if os.name == 'nt' and os.path.exists(new_file_path):
             batch_path = os.path.join(new_filedir, "update.bat")
-            response_batch = requests.get(exe_url, stream=True)
-            response_batch.raise_for_status()
-            self.file_size = int(response_batch.headers.get("content-length", 0))
-            self.downloaded_size = 0
             
-            with open(batch_path, "wb") as f:
-                for chunk in response_batch.iter_content(chunk_size=8192):
-                    f.write(chunk)
-                    self.downloaded_size += len(chunk)
-                    loading_window.update_progress(self.progress)
-                    print(f"Progression batch : {self.progress}%", end="\r")
-            
-            batch_success = True
+            try:
+                response_batch = requests.get(batch_url)
+                response_batch.raise_for_status()
+                
+                with open(batch_path, "wb") as f:
+                    f.write(response_batch.content)
+                batch_success = True
+            except requests.exceptions.RequestException as e:
+                print(f"Erreur lors du téléchargement du batch : {e}")
+                batch_success = False
         else:
             print("Aucun fichier batch rencontré dans la dernière version.")
             batch_success = False
@@ -159,7 +157,7 @@ class UpdateManager:
         else:
             self.show_file_location_message(new_filedir)
         
-        sys.exit()  # Ferme le programme
+        sys.exit()
     
     def show_file_location_message(self, file_path):
         """Affiche un message informant l'utilisateur de la nouvelle version."""
