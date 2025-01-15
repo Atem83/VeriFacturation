@@ -4,6 +4,8 @@ chcp 65001 > nul
 :: Chemins absolus de l'ancien et du nouveau fichier exécutables
 set old_file_path=%1
 set new_file_path=%2
+echo old : %old_file_path%
+echo new : %new_file_path%
 timeout 10
 :: Chemins absolus de l'ancien et du nouveau dossier parent
 for %%i in ("%old_file_path%") do set "old_filedir=%%~dpi"
