@@ -46,3 +46,4 @@ if exist "%new_filedir%" (
 ) else (
     echo Le dossier n'existe pas : %new_filedir%
 )
+pause
