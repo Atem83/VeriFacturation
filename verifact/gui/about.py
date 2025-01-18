@@ -132,7 +132,10 @@ class AboutWindow(QDialog):
                     test = "C:/Users/Atem/Desktop/maj/update.bat"
                     input("Commande interne ?")
                     #subprocess.run([test, updater.old_path, updater.new_path])
-                    subprocess.run(f'start cmd /k "{test} {updater.old_path} {updater.new_path}"', shell=True)
+                    #subprocess.run(f'start cmd /k "{test} {updater.old_path} {updater.new_path}"', shell=True)
+
+                    with open("C:/Users/Atem/Desktop/output.txt", "w") as output_file:
+                        subprocess.run([test, updater.old_path, updater.new_path], stdout=output_file, stderr=subprocess.STDOUT)
                     input("Oui mais non")
                 else:
                     updater.show_file_location_message(updater.new_filedir)
