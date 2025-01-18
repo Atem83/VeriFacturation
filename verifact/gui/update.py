@@ -137,7 +137,7 @@ class UpdateManager:
                 response_batch = requests.get(batch_url)
                 response_batch.raise_for_status()
                 
-                with open(self.batch_path, "wb") as f:
+                with open(self.batch_path, "w", newline="\r\n") as f:
                     f.write(response_batch.content)
                 self.batch_success = True
             except requests.exceptions.RequestException as e:
