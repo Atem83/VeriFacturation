@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QLabel, 
-    QPushButton, QDialog, QApplication
+    QPushButton, QDialog, QApplication, QMessageBox
     )
 from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QDesktopServices
@@ -123,20 +123,14 @@ class AboutWindow(QDialog):
             try:
                 updater.update_software()
                 self.check_update_button.setText("Mise à jour terminée")
+                updater.old_path = updater.old_path.replace("/", "\\")
+                updater.new_path = updater.new_path.replace("/", "\\")
                 
                 # Lancement du batch
                 if hasattr(sys, 'frozen') and updater.batch_success:
-                    print("Valeur de updater.batch_path : ", updater.batch_path)
-                    print("Valeur de updater.old_path : ", updater.old_path)
-                    print("Valeur de updater.new_path : ", updater.new_path)
-                    test = "C:/Users/Atem/Desktop/maj/update.bat"
-                    input("Commande interne ?")
-                    #subprocess.run([test, updater.old_path, updater.new_path])
-                    #subprocess.run(f'start cmd /k "{test} {updater.old_path} {updater.new_path}"', shell=True)
-
-                    with open("C:/Users/Atem/Desktop/output.txt", "w") as output_file:
-                        subprocess.run([test, updater.old_path, updater.new_path], stdout=output_file, stderr=subprocess.STDOUT)
-                    input("Oui mais non")
+                    msg = "Le logiciel va se fermer, puis la version à jour va se lancer"
+                    QMessageBox.information(None, "Information", msg)
+                    subprocess.run([updater.batch_path, updater.old_path, updater.new_path])
                 else:
                     updater.show_file_location_message(updater.new_filedir)
                 

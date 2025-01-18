@@ -5,8 +5,11 @@ Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## A faire
-- Supprime l'ancien fichier .exe et déplace le nouveau lors d'une mise à jour à l'aide d'un fichier .bat
 - Rajoute une fenêtre de détection automatique des mises à jour au lancement de l'application
+
+## [1.4.3] - 2025-01-19
+### Modifications
+- Lors d'une mise à jour, supprime l'ancien fichier .exe et déplace le nouveau à la place de l'ancien
 
 ## [1.4.2] - 2025-01-12
 ### Ajouts
