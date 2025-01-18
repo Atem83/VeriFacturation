@@ -130,11 +130,13 @@ class AboutWindow(QDialog):
                     print("Valeur de updater.old_path : ", updater.old_path)
                     print("Valeur de updater.new_path : ", updater.new_path)
                     test = "C:/Users/Atem/Desktop/maj/update.bat"
+                    input("Commande interne ?")
                     #subprocess.run([test, updater.old_path, updater.new_path])
                     subprocess.run(f'start cmd /k "{test} {updater.old_path} {updater.new_path}"', shell=True)
+                    input("Oui mais non")
                 else:
                     updater.show_file_location_message(updater.new_filedir)
-        
+                
                 self.menu.app.close()
             except Exception as e:
                 self.check_update_button.setText("Erreur inattendue lors de la mise à jour")
