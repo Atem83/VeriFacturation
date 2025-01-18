@@ -1,4 +1,4 @@
-@echo off
+::@echo off
 ::chcp 65001 > nul
 ::
 :::: Chemins absolus de l'ancien et du nouveau fichier exécutables
@@ -48,4 +48,4 @@
 ::) else (
 ::    echo Le dossier n'existe pas : %new_filedir%
 ::)
-pause
+::pause
