@@ -8,10 +8,13 @@ from .update import UpdateManager
 from verifact.error import run_error
 import verifact.metadata as metadata
 import re
+import sys
+import subprocess
 
 class AboutWindow(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.menu = parent
         self.setWindowTitle("À propos")
         layout = QVBoxLayout()
 
@@ -120,6 +123,19 @@ class AboutWindow(QDialog):
             try:
                 updater.update_software()
                 self.check_update_button.setText("Mise à jour terminée")
+                
+                # Lancement du batch
+                if hasattr(sys, 'frozen') and updater.batch_success:
+                    print("Valeur de updater.batch_path : ", updater.batch_path)
+                    print("Valeur de updater.old_path : ", updater.old_path)
+                    print("Valeur de updater.new_path : ", updater.new_path)
+                    test = "C:/Users/Atem/Desktop/maj/update.bat"
+                    #subprocess.run([test, updater.old_path, updater.new_path])
+                    subprocess.run(f'start cmd /k "{test} {updater.old_path} {updater.new_path}"', shell=True)
+                else:
+                    updater.show_file_location_message(updater.new_filedir)
+        
+                self.menu.app.close()
             except Exception as e:
                 self.check_update_button.setText("Erreur inattendue lors de la mise à jour")
                 run_error("Une erreur est survenue lors de la mise à jour", details = e)

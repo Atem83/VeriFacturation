@@ -1,6 +1,6 @@
 from .invoice import Invoice
-from .run_app import run
+from .gui.app import App
 from .error import ErrorWindow, run_error
 from .settings import Settings
 
-__all__ = ["Invoice", "run", "run_error", "Settings"]
+__all__ = ["Invoice", "App", "run_error", "Settings"]

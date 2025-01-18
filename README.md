@@ -57,7 +57,7 @@ pip install VeriFacturation
 ```python
 import verifact
 
-verifact.run()
+verifact.App().run()
 ```
 
 ```python

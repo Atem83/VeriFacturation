@@ -14,7 +14,7 @@ class UpdateManager:
         self.repo_name = repo_name
         self._file_size = 0
         self._downloaded_size = 0
-        self.dir_update = "mise à jour"
+        self.dir_update = "maj"
 
     @property
     def file_size(self):
@@ -104,24 +104,24 @@ class UpdateManager:
         
         # Vérifie si le programme est un exécutable ou un fichier python
         if hasattr(sys, 'frozen'):
-            old_file_path = os.path.abspath(sys.executable) # .exe
+            self.old_path = os.path.abspath(sys.executable) # .exe
         else:
-            old_file_path = os.path.abspath(__file__) # .py
+            self.old_path = os.path.abspath(__file__) # .py
         
         # Définir le chemin du dossier et du fichier mis à jour
         new_filename = str(os.path.basename(exe_url))
-        new_filedir = os.path.join(os.path.dirname(old_file_path), self.dir_update)
-        new_file_path = os.path.join(new_filedir, new_filename)
+        self.new_filedir = os.path.join(os.path.dirname(self.old_path), self.dir_update)
+        self.new_path = os.path.join(self.new_filedir, new_filename)
         
         # Créer le dossier s'il n'existe pas
-        os.makedirs(new_filedir, exist_ok=True)
+        os.makedirs(self.new_filedir, exist_ok=True)
         
         # Affiche la barre de progression
         loading_window = LoadingWindow(self.about)
         loading_window.show()
         
         # Téléchargement du fichier mis à jour
-        with open(new_file_path, "wb") as f:
+        with open(self.new_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
                 self.downloaded_size += len(chunk)
@@ -130,34 +130,25 @@ class UpdateManager:
         
         # Téléchargement du fichier batch
         batch_url = f"https://raw.githubusercontent.com/{self.repo_owner}/{self.repo_name}/main/update.bat"
-        if os.name == 'nt' and os.path.exists(new_file_path):
-            batch_path = os.path.join(new_filedir, "update.bat")
+        if os.name == 'nt' and os.path.exists(self.new_path):
+            self.batch_path = os.path.join(self.new_filedir, "update.bat")
             
             try:
                 response_batch = requests.get(batch_url)
                 response_batch.raise_for_status()
                 
-                with open(batch_path, "wb") as f:
+                with open(self.batch_path, "wb") as f:
                     f.write(response_batch.content)
-                batch_success = True
+                self.batch_success = True
             except requests.exceptions.RequestException as e:
                 print(f"Erreur lors du téléchargement du batch : {e}")
-                batch_success = False
+                self.batch_success = False
         else:
             print("Aucun fichier batch rencontré dans la dernière version.")
-            batch_success = False
+            self.batch_success = False
         
         loading_window.close()
         print("Téléchargement de la mise à jour terminé.")
-        
-        if hasattr(sys, 'frozen') and batch_success:
-            print("Chemin de l'ancienne version :", old_file_path)
-            print("Chemin du fichier mis à jour :", new_file_path)
-            subprocess.run([batch_path, old_file_path, new_file_path])
-        else:
-            self.show_file_location_message(new_filedir)
-        
-        sys.exit()
     
     def show_file_location_message(self, file_path):
         """Affiche un message informant l'utilisateur de la nouvelle version."""
