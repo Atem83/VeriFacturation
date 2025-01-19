@@ -128,16 +128,21 @@ class AboutWindow(QDialog):
                 
                 # Lancement du batch
                 if hasattr(sys, 'frozen') and updater.batch_success:
-                    msg = "Le logiciel va se fermer, puis la version à jour va se lancer"
+                    msg = "Le logiciel va se fermer,"
+                    msg += "\npuis la version à jour va se lancer"
                     QMessageBox.information(None, "Information", msg)
-                    subprocess.run([updater.batch_path, updater.old_path, updater.new_path])
+                    subprocess.run([updater.batch_path, 
+                                    updater.old_path, 
+                                    updater.new_path
+                                    ])
                 else:
                     updater.show_file_location_message(updater.new_filedir)
                 
                 self.menu.app.close()
             except Exception as e:
-                self.check_update_button.setText("Erreur inattendue lors de la mise à jour")
-                run_error("Une erreur est survenue lors de la mise à jour", details = e)
+                msg = "Une erreur est survenue lors de la mise à jour"
+                self.check_update_button.setText(msg)
+                run_error(msg, details = e)
         else:
             self.check_update_button.setText("Logiciel à jour")
 

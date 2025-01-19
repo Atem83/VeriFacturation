@@ -1,2 +1,0 @@
-# Spécifie que tous les fichiers .bat doivent utiliser CRLF en fin de ligne
-*.bat text eol=crlf

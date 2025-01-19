@@ -1,7 +1,6 @@
 import requests
 import os
 import sys
-import subprocess
 from PySide6.QtWidgets import QMessageBox
 from packaging.version import Version
 from .progressbar import LoadingWindow
@@ -49,10 +48,12 @@ class UpdateManager:
 
     def get_latest_release_info(self, extension=".exe"):
         """
-        Récupère les informations de la dernière version publiée sur GitHub, y compris le tag et l'URL du fichier .exe.
+        Récupère les informations de la dernière version publiée sur GitHub, 
+        y compris le tag et l'URL du fichier .exe.
 
         Returns:
-            tuple: Un tuple contenant le tag de la dernière version et l'URL du fichier .exe, ou (None, None) si une erreur se produit.
+            tuple: Un tuple contenant le tag de la dernière version et 
+            l'URL du fichier .exe, ou (None, None) si une erreur se produit.
         """
         url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/releases/latest"
         try:
@@ -110,7 +111,10 @@ class UpdateManager:
         
         # Définir le chemin du dossier et du fichier mis à jour
         new_filename = str(os.path.basename(exe_url))
-        self.new_filedir = os.path.join(os.path.dirname(self.old_path), self.dir_update)
+        self.new_filedir = os.path.join(
+            os.path.dirname(self.old_path), 
+            self.dir_update
+            )
         self.new_path = os.path.join(self.new_filedir, new_filename)
         
         # Créer le dossier s'il n'existe pas
@@ -136,9 +140,8 @@ class UpdateManager:
             try:
                 response_batch = requests.get(batch_url)
                 response_batch.raise_for_status()
-                
                 with open(self.batch_path, "w", newline="\r\n") as f:
-                    f.write(response_batch.content)
+                    f.write(response_batch.content.decode('utf-8'))
                 self.batch_success = True
             except requests.exceptions.RequestException as e:
                 print(f"Erreur lors du téléchargement du batch : {e}")
@@ -160,7 +163,7 @@ class UpdateManager:
         msg_box.setWindowTitle("Mise à jour terminée")
         msg_box.setText(txt)
         msg_box.setIcon(QMessageBox.Information)
-        msg_box.setStandardButtons(QMessageBox.Ok)  # Bouton pour fermer le message
+        msg_box.setStandardButtons(QMessageBox.Ok)
 
         # Afficher le message
         msg_box.exec()

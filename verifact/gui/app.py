@@ -1,11 +1,15 @@
 import sys
+import re
+import subprocess
 from pathlib import Path
-from PySide6.QtWidgets import QApplication, QSplashScreen, QMainWindow
+from PySide6.QtWidgets import QApplication, QSplashScreen, QMainWindow, QMessageBox
 from PySide6.QtGui import QPixmap, QPainter, QColor, QFont
 from PySide6.QtCore import Qt
 from .menu import MenuBar
 from .main import MainWindow
+from .update import UpdateManager
 from verifact.settings import Settings
+from verifact.error import run_error
 import verifact.metadata as metadata
 
 class App(QMainWindow):
@@ -44,6 +48,7 @@ class App(QMainWindow):
         """Exécuter l'application."""
         self.show()
         self.splash.finish(self)
+        self.check_for_updates()
         sys.exit(self.qapp.exec())
         
     def img_splash(self):
@@ -96,3 +101,58 @@ class App(QMainWindow):
             # Lancer l'auto-search après le drop
             self.main_frame.auto_search()
 
+    def extract_repo_info(self, url: str):
+        """Extrait le nom d'utilisateur et le nom du repository d'une URL GitHub."""
+        pattern = r'https?://(?:www\.)?github\.com/([^/]+)/([^/]+)'
+        match = re.match(pattern, url)
+
+        if match:
+            repo_owner = match.group(1)
+            repo_name = match.group(2)
+            return repo_owner, repo_name
+        else:
+            raise ValueError("URL invalide")
+        
+    def check_for_updates(self):
+        """Vérification des mises à jour."""
+        repo_owner, repo_name = self.extract_repo_info(metadata.url)
+        
+        updater = UpdateManager(repo_owner, repo_name, self)
+        reply = None
+        
+        # Vérification de la disponibilité d'une mise à jour
+        if updater.check_updates() and self.settings.auto_update:
+            msg = "Une mise à jour est disponible,"
+            msg += "\nsouhaitez-vous mettre à jour le logiciel ?"
+            reply = QMessageBox.question(
+                None, 
+                "Information", 
+                msg, 
+                QMessageBox.Yes | QMessageBox.No
+                )
+        
+        # Téléchargement de la mise à jour
+        if updater.check_updates() and reply == QMessageBox.Yes:
+            try:
+                updater.update_software()
+                updater.old_path = updater.old_path.replace("/", "\\")
+                updater.new_path = updater.new_path.replace("/", "\\")
+                
+                # Lancement du batch
+                if hasattr(sys, 'frozen') and updater.batch_success:
+                    msg = "Le logiciel va se fermer,"
+                    msg += "\npuis la version à jour va se lancer"
+                    QMessageBox.information(None, "Information", msg)
+                    subprocess.run([
+                        updater.batch_path, 
+                        updater.old_path, 
+                        updater.new_path
+                        ])
+                else:
+                    updater.show_file_location_message(updater.new_filedir)
+                self.close()
+                
+            except Exception as e:
+                msg = "Une erreur est survenue lors de la mise à jour"
+                run_error(msg, details = e)
+                

@@ -1,7 +1,4 @@
-import sys
-import time
-from PySide6.QtWidgets import QApplication, QDialog, QProgressBar, QLabel, QVBoxLayout, QFrame
-from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QApplication, QDialog, QProgressBar, QLabel, QVBoxLayout
 from PySide6.QtCore import Qt
 
 class LoadingWindow(QDialog):

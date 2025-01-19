@@ -6,6 +6,7 @@ class Settings():
         self._client_root = "C"
         self._min_occurrences = 3
         self._case_insensitive = True
+        self._auto_update = True
     
     @property
     def client_root(self):
@@ -40,6 +41,17 @@ class Settings():
             return
         self._case_insensitive = value
 
+    @property
+    def auto_update(self):
+        """Indique si les mises à jour sont recherchées au démarrage."""
+        return self._auto_update
+
+    @auto_update.setter
+    def auto_update(self, value):
+        if not isinstance(value, bool):
+            return
+        self._auto_update = value
+
     def path_save(self):
         """Renvoie le chemin du fichier de sauvegarde."""
         file = "Paramètres.json"
@@ -52,7 +64,8 @@ class Settings():
         settings = {
             "client_root": self.client_root,
             "min_occurrences": self.min_occurrences,
-            "case_insensitive": self.case_insensitive
+            "case_insensitive": self.case_insensitive,
+            "auto_update": self.auto_update
             }
         path_file = self.path_save()
 
@@ -76,5 +89,6 @@ class Settings():
                 self.client_root = settings["client_root"]
                 self.min_occurrences = settings["min_occurrences"]
                 self.case_insensitive = settings["case_insensitive"]
+                self.auto_update = settings["auto_update"]
         except:
             print("Impossible de charger les paramètres.")

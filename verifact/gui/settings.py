@@ -53,6 +53,18 @@ class SettingsWindow(QDialog):
         case_layout.addWidget(self.case_toggle)
         layout.addLayout(case_layout)
         
+        # Recherche des mises à jour au démarrage
+        update_layout = QHBoxLayout()
+        update_label = QLabel("Mises à jour au démarrage :")
+        self.update_toggle = QCheckBox()
+        self.update_toggle.setChecked(self.menu.app.settings.auto_update)
+        self.update_toggle.setToolTip(
+            "Si la case est cochée, le logiciel recherchera automatiquement\n" + 
+            "si une mise à jour est disponible au démarrage.")
+        update_layout.addWidget(update_label)
+        update_layout.addWidget(self.update_toggle)
+        layout.addLayout(update_layout)
+        
         # Ajouter un espacement supplémentaire
         layout.addSpacing(10)
         
@@ -87,6 +99,7 @@ class SettingsWindow(QDialog):
             self.menu.app.settings.client_root = str(self.client_input.text())
             self.menu.app.settings.min_occurrences = occ
             self.menu.app.settings.case_insensitive = bool(self.case_toggle.isChecked())
+            self.menu.app.settings.auto_update = bool(self.update_toggle.isChecked())
             self.menu.app.settings.save()
             self.accept()
     
