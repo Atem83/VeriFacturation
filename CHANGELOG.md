@@ -5,11 +5,12 @@ Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## A faire
-- Rajoute une fenêtre de détection automatique des mises à jour au lancement de l'application
+- Rien pour le moment.
 
 ## [1.4.3] - 2025-01-19
 ### Modifications
-- Lors d'une mise à jour, supprime l'ancien fichier .exe et déplace le nouveau à la place de l'ancien
+- Lors d'une mise à jour, supprime l'ancien fichier .exe et déplace le nouveau à la place de l'ancien.
+- Recherche automatiquement les mises à jour au démarrage.
 
 ## [1.4.2] - 2025-01-12
 ### Ajouts
