@@ -7,6 +7,11 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## A faire
 - Rien pour le moment.
 
+## [1.4.4] - 2025-01-25
+### Modifications
+- Désactivation du splash à l'ouverture de l'application.
+- Suppression du fichier batch et de son utilisation à cause de trop nombreux bugs dans les chemins avec des espaces.
+
 ## [1.4.3] - 2025-01-19
 ### Modifications
 - Lors d'une mise à jour, supprime l'ancien fichier .exe et déplace le nouveau à la place de l'ancien.
