@@ -16,10 +16,10 @@ class App(QMainWindow):
     def __init__(self):
         # Initialisation de QApplication
         self.qapp = QApplication(sys.argv)
-        self.splash = QSplashScreen(self.img_splash())
-        self.splash.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint)
-        self.splash.show()
-        self.qapp.processEvents()
+        #self.splash = QSplashScreen(self.img_splash())
+        #self.splash.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint)
+        #self.splash.show()
+        #self.qapp.processEvents()
         
         # Initialisation de QMainWindow
         super().__init__()
@@ -45,9 +45,9 @@ class App(QMainWindow):
         self.setAcceptDrops(True)
         
     def run(self):
-        """Exécuter l'application."""
+        """Exécution de l'application."""
         self.show()
-        self.splash.finish(self)
+        #self.splash.finish(self)
         self.check_for_updates()
         sys.exit(self.qapp.exec())
         
@@ -135,23 +135,9 @@ class App(QMainWindow):
         if updater.check_updates() and reply == QMessageBox.Yes:
             try:
                 updater.update_software()
-                updater.old_path = updater.old_path.replace("/", "\\")
-                updater.new_path = updater.new_path.replace("/", "\\")
-                
-                # Lancement du batch
-                if hasattr(sys, 'frozen') and updater.batch_success:
-                    msg = "Le logiciel va se fermer,"
-                    msg += "\npuis la version à jour va se lancer"
-                    QMessageBox.information(None, "Information", msg)
-                    subprocess.run([
-                        updater.batch_path, 
-                        updater.old_path, 
-                        updater.new_path
-                        ])
-                else:
-                    updater.show_file_location_message(updater.new_filedir)
+                updater.show_file_location_message(updater.new_filedir)
                 self.close()
-                
+                sys.exit(self.qapp.exec())
             except Exception as e:
                 msg = "Une erreur est survenue lors de la mise à jour"
                 run_error(msg, details = e)

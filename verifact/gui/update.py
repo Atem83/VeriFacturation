@@ -132,24 +132,6 @@ class UpdateManager:
                 loading_window.update_progress(self.progress)
                 print(f"Progression mise à jour : {self.progress}%", end="\r")
         
-        # Téléchargement du fichier batch
-        batch_url = f"https://raw.githubusercontent.com/{self.repo_owner}/{self.repo_name}/main/update.bat"
-        if os.name == 'nt' and os.path.exists(self.new_path):
-            self.batch_path = os.path.join(self.new_filedir, "update.bat")
-            
-            try:
-                response_batch = requests.get(batch_url)
-                response_batch.raise_for_status()
-                with open(self.batch_path, "w", newline="\r\n") as f:
-                    f.write(response_batch.content.decode('utf-8'))
-                self.batch_success = True
-            except requests.exceptions.RequestException as e:
-                print(f"Erreur lors du téléchargement du batch : {e}")
-                self.batch_success = False
-        else:
-            print("Aucun fichier batch rencontré dans la dernière version.")
-            self.batch_success = False
-        
         loading_window.close()
         print("Téléchargement de la mise à jour terminé.")
     
