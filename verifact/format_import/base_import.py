@@ -115,7 +115,7 @@ class BaseImport(ABC):
         return df
 
     def aggregate_key(self, df: pl.DataFrame, key: str):
-        """Fait la somme des comptes clients d'une même facture
+        """Fait la somme des comptes clients d'une même facture et d'une même écriture
 
         Args:
             df (pl.DataFrame): dataframe des écritures comptables
@@ -129,6 +129,7 @@ class BaseImport(ABC):
         df = df.group_by(
             [
                 "PieceRef",
+                "EcritureNum",
                 pl.col("CompteNum").str.contains(key).alias("is_key")
             ]
         ).agg(
