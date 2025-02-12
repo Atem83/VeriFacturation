@@ -330,6 +330,9 @@ class Invoice:
 
         # Conserver les pattern qui ont un certain nombre d'occurences trouvées
         df = df.filter(pl.col("count") >= count).drop("count")
+        
+        # Tri des patterns par leur préfixe suivi du suffixe
+        df = df.sort("prefix", "suffix")
 
         return df.to_dicts()
         
