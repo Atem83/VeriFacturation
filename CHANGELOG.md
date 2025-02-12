@@ -7,6 +7,11 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## A faire
 - Rien pour le moment.
 
+## [1.4.5] - 2025-02-12
+### Modifications
+- Correction d'un bug qui cumulait les comptes clients des doublons de factures.
+- Tri des patterns qui sont affichés automatiquement pour conserver un ordre constant.
+
 ## [1.4.4] - 2025-01-25
 ### Modifications
 - Désactivation du splash à l'ouverture de l'application.
