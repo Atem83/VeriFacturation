@@ -12,6 +12,9 @@ class ErrorWindow(QDialog):
         self.setModal(True)
         self.layout = QVBoxLayout()
         
+        # Définir le drapeau pour rester au premier plan
+        self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+        
         # Icone d'erreur
         warning_icon = QMessageBox().standardIcon(QMessageBox.Warning)
         icon_label = QLabel()
