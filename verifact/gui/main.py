@@ -2,7 +2,7 @@ from pathlib import Path
 from PySide6.QtWidgets import (
     QFrame, QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, 
     QLineEdit, QPushButton, QComboBox, QTableWidget, QTableWidgetItem,
-    QHeaderView, QAbstractItemView, QFileDialog
+    QHeaderView, QAbstractItemView, QFileDialog, QMessageBox
 )
 from PySide6.QtCore import Qt
 from verifact.invoice import Invoice
@@ -261,6 +261,25 @@ class MainWindow(QFrame):
                 )
                 run_error(msg)
                 return
+            
+            # Si un grand nombre de factures manquantes sont trouvées dans une liste
+            for serial in invoices.serial.serial_list:
+                if serial.missing.height > 1000:
+                    msg = f"Plus de 1000 factures manquantes ont été trouvées dans la séquence '{serial.name}'.\n\n"
+                    msg += "Il s'agit probablement d'une erreur de paramétrage.\n\n"
+                    msg += "Il vous est conseillé de revérifier les préfixes et suffixes choisis ainsi que les numéros de début et de fin pour chaque liste.\n\n"
+                    msg += "Souhaitez-vous tout de même continuer ?"
+                    msg_box = QMessageBox()
+                    msg_box.setWindowTitle("Erreur de paramétrage")
+                    msg_box.setIcon(QMessageBox.Warning)
+                    msg_box.setText(msg)
+                    msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+                    msg_box.setButtonText(QMessageBox.Yes, "Continuer")
+                    msg_box.setButtonText(QMessageBox.No, "Annuler")
+                    msg_box.setDefaultButton(QMessageBox.No)
+                    response = msg_box.exec()
+                    if response == QMessageBox.No:
+                        return
             
             # Exporter les résultats
             invoices.export()
