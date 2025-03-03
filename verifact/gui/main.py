@@ -5,7 +5,6 @@ from PySide6.QtWidgets import (
     QHeaderView, QAbstractItemView, QFileDialog
 )
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QShortcut, QKeySequence
 from verifact.invoice import Invoice
 from verifact.error import run_error
 import traceback
@@ -25,14 +24,6 @@ class MainWindow(QFrame):
         layout.addLayout(self.init_create_row())
         layout.addLayout(self.init_move_row())
         layout.addWidget(self.init_exe())
-        
-        # Créer un raccourci clavier pour la flèche du haut
-        self.shortcut_up = QShortcut(QKeySequence(Qt.Key_Up), self)
-        self.shortcut_up.activated.connect(self.move_up)
-        
-        # Créer un raccourci clavier pour la flèche du bas
-        self.shortcut_down = QShortcut(QKeySequence(Qt.Key_Down), self)
-        self.shortcut_down.activated.connect(self.move_down)
 
     def init_file(self):
         """Initialise le champ de texte du fichier."""
