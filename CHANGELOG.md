@@ -4,8 +4,13 @@ Tous les changements de ce projet seront documentés ici.
 Ce format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
-## A faire
-- Rien pour le moment.
+## [1.4.6] - 2025-03-04
+### Ajouts
+- Ajout d'un message d'avertissement lorsqu'il y a beaucoup de factures manquantes détectées.
+- Ajout d'un filtre de journaux dans les paramètres pour l'import FEC uniquement.
+
+### Modifications
+- Suppression des raccourcis flèche du haut et flèche du bas pour monter/descendre des lignes
 
 ## [1.4.5] - 2025-02-12
 ### Modifications
