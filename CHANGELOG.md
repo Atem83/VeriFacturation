@@ -10,7 +10,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Ajout d'un filtre de journaux dans les paramètres pour l'import FEC uniquement.
 
 ### Modifications
-- Suppression des raccourcis flèche du haut et flèche du bas pour monter/descendre des lignes
+- Suppression des raccourcis flèche du haut et du bas pour monter/descendre des lignes
 
 ## [1.4.5] - 2025-02-12
 ### Modifications
