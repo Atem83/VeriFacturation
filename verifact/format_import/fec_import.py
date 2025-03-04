@@ -94,6 +94,9 @@ class FECImport(BaseImport):
                              .str.replace(",", ".")
                              .cast(pl.Float64))
 
+        # Filtrer les journaux pour ne garder que ceux d'après le log
+        df = df.filter(pl.col("JournalCode").is_in(self.logs))
+
         # Conserve uniquement les colonnes utiles
         df = df.select("PieceRef",
                        "EcritureDate",

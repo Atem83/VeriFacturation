@@ -1,13 +1,19 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from PySide6.QtWidgets import QMessageBox
 import polars as pl
 from verifact.error import run_error
 
 class BaseImport(ABC):
-    def __init__(self, filename: str | None = None, key: str = 'C'):
+    def __init__(
+        self, 
+        filename: str | None = None, 
+        key: str = 'C',
+        logs: tuple = ("VE", "VT")
+        ):
+        
         self.filename = filename
         self.key = key
+        self.logs = logs
         self._sales = None
         
         if self.filename is not None:

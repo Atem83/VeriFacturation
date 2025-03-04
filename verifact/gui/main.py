@@ -160,7 +160,8 @@ class MainWindow(QFrame):
         # Rechercher le pattern des différentes séquences de facturation
         invoices = Invoice(
             self.file_input.text(),
-            self.app.settings.client_root
+            self.app.settings.client_root,
+            self.app.settings.logs
             )
         invoices.import_invoices(self.format_dropdown.currentText())
         
@@ -215,7 +216,8 @@ class MainWindow(QFrame):
         # Créer mon objet Invoice à partir des informations de l'utilisateur
         invoices = Invoice(
             self.file_input.text(),
-            self.app.settings.client_root
+            self.app.settings.client_root,
+            self.app.settings.logs
             )
         invoices.import_invoices(self.format_dropdown.currentText())
         for row in data:

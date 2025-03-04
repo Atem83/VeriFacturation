@@ -7,12 +7,14 @@ from .format_export import *
 class Invoice:
     def __init__(self, 
                  filename: str | None = None,
-                 customer_key: str = 'C'
+                 customer_key: str = 'C',
+                 logs: tuple = ("VE", "VT")
                  ):
         
         self._invoices = None
         self.filename = filename
         self.customer_key = customer_key
+        self.logs = logs
         self.serial = SerialManager()
     
     @property
@@ -118,7 +120,8 @@ class Invoice:
             if source == cls().name():
                 self.invoices = cls(
                     self.filename,
-                    self.customer_key
+                    self.customer_key,
+                    self.logs
                 ).invoices
                 break
     

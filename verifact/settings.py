@@ -7,6 +7,7 @@ class Settings():
         self._min_occurrences = 3
         self._case_insensitive = True
         self._auto_update = True
+        self._logs = ("VE", "VT")
     
     @property
     def client_root(self):
@@ -51,11 +52,25 @@ class Settings():
         if not isinstance(value, bool):
             return
         self._auto_update = value
+        
+    @property
+    def logs(self):
+        """Codes journaux à conserver dans le fichier d'import"""
+        return self._logs
+    
+    @logs.setter
+    def logs(self, value):
+        if isinstance(value, tuple):
+            self._logs = value
+        if isinstance(value, str):
+            self._logs = (value)
+        if isinstance(value, list):
+            self._logs = tuple(value)
 
     def path_save(self):
         """Renvoie le chemin du fichier de sauvegarde."""
-        file = "Paramètres.json"
-        folder = "Verifact"
+        file = "verifact_parameters.json"
+        folder = "Atem83"
         path_file = Path.home() / "Documents" / folder / file
         return path_file
 
@@ -65,7 +80,8 @@ class Settings():
             "client_root": self.client_root,
             "min_occurrences": self.min_occurrences,
             "case_insensitive": self.case_insensitive,
-            "auto_update": self.auto_update
+            "auto_update": self.auto_update,
+            "logs": self.logs
             }
         path_file = self.path_save()
 
@@ -90,5 +106,6 @@ class Settings():
                 self.min_occurrences = settings["min_occurrences"]
                 self.case_insensitive = settings["case_insensitive"]
                 self.auto_update = settings["auto_update"]
+                self.logs = settings["logs"]
         except:
             print("Impossible de charger les paramètres.")

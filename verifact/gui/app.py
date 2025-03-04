@@ -1,10 +1,6 @@
 import sys
 import re
-import subprocess
-from pathlib import Path
-from PySide6.QtWidgets import QApplication, QSplashScreen, QMainWindow, QMessageBox
-from PySide6.QtGui import QPixmap, QPainter, QColor, QFont
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 from .menu import MenuBar
 from .main import MainWindow
 from .update import UpdateManager
@@ -16,10 +12,6 @@ class App(QMainWindow):
     def __init__(self):
         # Initialisation de QApplication
         self.qapp = QApplication(sys.argv)
-        #self.splash = QSplashScreen(self.img_splash())
-        #self.splash.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint)
-        #self.splash.show()
-        #self.qapp.processEvents()
         
         # Initialisation de QMainWindow
         super().__init__()
@@ -47,33 +39,8 @@ class App(QMainWindow):
     def run(self):
         """Exécution de l'application."""
         self.show()
-        #self.splash.finish(self)
         self.check_for_updates()
         sys.exit(self.qapp.exec())
-        
-    def img_splash(self):
-        """Retourne le pixmap de la fenêtre de chargement."""
-        img = Path(__file__).parent.parent.parent / "images" / "splash.png"
-        pixmap = QPixmap(img).scaled(400, 300, Qt.KeepAspectRatio)
-
-        # Modifie la police et couleur du texte
-        color = QColor(205, 92, 92)
-        font = QFont()
-        font.setBold(True)
-        font.setPointSize(10)
-
-        # Créer un QPainter pour dessiner sur le QPixmap
-        painter = QPainter(pixmap)
-        painter.setFont(font)
-        painter.setPen(color)
-
-        # Dessiner le texte
-        text_rect = pixmap.rect()
-        text_rect.moveTop(pixmap.rect().top() + 57)  # Décale le texte de x pixels vers le bas
-        painter.drawText(text_rect, Qt.AlignHCenter, "Chargement...")
-        painter.end()
-
-        return pixmap
         
     def on_resize(self, event):
         """Exécute des actions lorsque la fenêtre principale est redimensionnée."""
